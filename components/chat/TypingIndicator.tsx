@@ -25,20 +25,20 @@ export function TypingIndicator() {
         >
           {/* Agent avatar */}
           <div
-            className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm"
-            style={{ backgroundColor: activeAgent.color + '25' }}
+            className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm"
+            style={{ backgroundColor: activeAgent.color + '26' }}
           >
             {activeAgent.icon}
           </div>
 
-          <div className="flex items-center gap-2 bg-gray-100 rounded-2xl rounded-bl-sm px-4 py-3">
+          <div className="flex items-center gap-2 bg-[color:var(--ap-bg-card)] border border-[color:var(--ap-border)] rounded-2xl rounded-bl-sm px-4 py-3">
             {/* Bouncing dots */}
             <div className="flex items-center gap-1">
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
-                  className="w-2 h-2 rounded-full bg-gray-400"
-                  animate={{ y: [0, -6, 0] }}
+                  className="w-2 h-2 rounded-full bg-slate-500"
+                  animate={{ y: [0, -6, 0], backgroundColor: ['#64748b', '#3b82f6', '#64748b'] }}
                   transition={{
                     duration: 0.6,
                     repeat: Infinity,
@@ -48,7 +48,7 @@ export function TypingIndicator() {
                 />
               ))}
             </div>
-            <span className="text-xs text-gray-500 ml-1">
+            <span className="text-xs text-slate-500 ml-1">
               {activeAgent.icon} {activeAgent.nameKo}가 분석 중...
             </span>
           </div>

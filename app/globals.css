@@ -125,10 +125,74 @@
   }
 }
 
-/* All-Pass Custom Styles */
+/* ═══════════════════════════════════════════════
+   All-Pass Design System — "Digital Command Center"
+   ═══════════════════════════════════════════════ */
+
+/* Design Tokens */
+:root {
+  /* Command Center palette */
+  --ap-bg-deep: #050a18;
+  --ap-bg-base: #0a1628;
+  --ap-bg-panel: #0f1d32;
+  --ap-bg-card: #162033;
+  --ap-bg-elevated: #1e2d45;
+  --ap-border: rgba(148, 163, 184, 0.08);
+  --ap-border-hover: rgba(148, 163, 184, 0.15);
+  --ap-border-active: rgba(59, 130, 246, 0.35);
+  --ap-text: #f1f5f9;
+  --ap-text-secondary: #94a3b8;
+  --ap-text-dim: #64748b;
+  --ap-accent-blue: #3b82f6;
+  --ap-accent-cyan: #06b6d4;
+  --ap-accent-emerald: #10b981;
+  --ap-accent-amber: #f59e0b;
+  --ap-accent-rose: #f43f5e;
+  --ap-accent-violet: #8b5cf6;
+  --ap-accent-indigo: #6366f1;
+  /* Glass */
+  --ap-glass-bg: rgba(15, 29, 50, 0.65);
+  --ap-glass-border: rgba(148, 163, 184, 0.1);
+  --ap-glass-blur: 16px;
+  /* Noise */
+  --ap-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* ── Keyframes ───────────────────────────────── */
+
 @keyframes pulse-blue {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
-  50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+}
+
+@keyframes glow-ring {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.08); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes float-up {
+  0% { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  0% { opacity: 0; transform: translateX(-12px); }
+  100% { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes flow-dash {
@@ -152,39 +216,268 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-pulse-blue {
-  animation: pulse-blue 2s ease-in-out infinite;
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(59, 130, 246, 0.2); }
+  50% { border-color: rgba(59, 130, 246, 0.5); }
 }
 
-.animate-flow-dash {
-  animation: flow-dash 1s linear infinite;
+@keyframes hero-grid-fade {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.08; }
 }
 
-.animate-count-up {
-  animation: count-up 0.5s ease-out forwards;
+/* ── Utility classes ─────────────────────────── */
+
+.animate-pulse-blue { animation: pulse-blue 2s ease-in-out infinite; }
+.animate-flow-dash { animation: flow-dash 1s linear infinite; }
+.animate-count-up { animation: count-up 0.5s ease-out forwards; }
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
 }
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+.animate-float-up { animation: float-up 0.6s ease-out forwards; }
+.animate-slide-in { animation: slide-in-right 0.3s ease-out forwards; }
+.animate-border-glow { animation: border-glow 2s ease-in-out infinite; }
 
 .typing-dot:nth-child(1) { animation: typing-dot 1.4s ease-in-out infinite 0s; }
 .typing-dot:nth-child(2) { animation: typing-dot 1.4s ease-in-out infinite 0.2s; }
 .typing-dot:nth-child(3) { animation: typing-dot 1.4s ease-in-out infinite 0.4s; }
 
-/* Government Blue Theme */
+/* ── Glass morphism ──────────────────────────── */
+
+.glass-panel {
+  background: var(--ap-glass-bg);
+  backdrop-filter: blur(var(--ap-glass-blur));
+  -webkit-backdrop-filter: blur(var(--ap-glass-blur));
+  border: 1px solid var(--ap-glass-border);
+}
+
+.glass-card {
+  background: rgba(22, 32, 51, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(148, 163, 184, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Noise texture overlay ───────────────────── */
+
+.noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--ap-noise);
+  background-repeat: repeat;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+/* ── Hero gradients ──────────────────────────── */
+
+.hero-gradient {
+  background: linear-gradient(
+    145deg,
+    #020617 0%,
+    #0a1628 20%,
+    #0c2341 40%,
+    #0e2a52 60%,
+    #0a1e3d 80%,
+    #050a18 100%
+  );
+}
+
+.hero-gradient-accent {
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.15) 0%, transparent 70%),
+              radial-gradient(ellipse 60% 40% at 80% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+              radial-gradient(ellipse 50% 30% at 20% 70%, rgba(6, 182, 212, 0.06) 0%, transparent 60%);
+}
+
 .gov-gradient {
-  background: linear-gradient(135deg, #1a56db 0%, #003d9d 50%, #1e3a5f 100%);
+  background: linear-gradient(135deg, #0a1628 0%, #0c2341 50%, #0e2a52 100%);
 }
 
 .gov-gradient-text {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%);
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 40%, #818cf8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* React Flow Custom */
+/* ── Command center dashboard ────────────────── */
+
+.cmd-bg {
+  background-color: var(--ap-bg-deep);
+  background-image:
+    radial-gradient(ellipse 100% 80% at 50% 0%, rgba(59, 130, 246, 0.03) 0%, transparent 60%);
+}
+
+.cmd-header {
+  background: linear-gradient(180deg, var(--ap-bg-panel) 0%, var(--ap-bg-base) 100%);
+  border-bottom: 1px solid var(--ap-border);
+}
+
+.cmd-panel {
+  background: var(--ap-bg-panel);
+  border: 1px solid var(--ap-border);
+  border-radius: 12px;
+}
+
+.cmd-panel-header {
+  border-bottom: 1px solid var(--ap-border);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Status indicators ───────────────────────── */
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.status-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  animation: glow-ring 2s ease-in-out infinite;
+}
+
+.status-dot-running {
+  background: var(--ap-accent-blue);
+}
+.status-dot-running::after {
+  border: 2px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-dot-completed {
+  background: var(--ap-accent-emerald);
+}
+.status-dot-completed::after {
+  border: 2px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-dot-error {
+  background: var(--ap-accent-rose);
+}
+.status-dot-error::after {
+  border: 2px solid rgba(244, 63, 94, 0.3);
+}
+
+/* ── Terminal / Log styles ───────────────────── */
+
+.terminal-log {
+  font-family: var(--font-geist-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--ap-text-secondary);
+}
+
+.terminal-log-entry {
+  padding: 2px 0;
+  border-left: 2px solid transparent;
+  padding-left: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.terminal-log-entry:last-child {
+  border-left-color: var(--ap-accent-blue);
+}
+
+/* ── React Flow overrides (dark theme) ───────── */
+
 .react-flow__node {
   transition: all 0.3s ease;
 }
 
 .react-flow__edge path {
-  transition: stroke 0.3s ease;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.react-flow__background {
+  background-color: var(--ap-bg-deep) !important;
+}
+
+.react-flow__controls button {
+  background: var(--ap-bg-card) !important;
+  border-color: var(--ap-border) !important;
+  color: var(--ap-text-secondary) !important;
+  fill: var(--ap-text-secondary) !important;
+}
+
+.react-flow__controls button:hover {
+  background: var(--ap-bg-elevated) !important;
+}
+
+.react-flow__minimap {
+  background: var(--ap-bg-panel) !important;
+  border-color: var(--ap-border) !important;
+}
+
+/* ── Scrollbar ───────────────────────────────── */
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.25);
+}
+
+/* ── Landing page specific ───────────────────── */
+
+.landing-feature-card {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  padding: 28px;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--card-accent, #3b82f6);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.landing-feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.landing-feature-card:hover::before {
+  transform: scaleX(1);
 }

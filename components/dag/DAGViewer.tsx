@@ -125,7 +125,7 @@ export function DAGViewer() {
 
   if (!dag) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-gray-400 bg-gray-50">
+      <div className="flex flex-col items-center justify-center h-full bg-[color:var(--ap-bg-deep)] text-slate-500">
         <GitFork className="w-12 h-12 mb-3 opacity-20" />
         <p className="text-sm font-medium">DAG 워크플로우</p>
         <p className="text-xs mt-1 opacity-70">민원을 입력하면 실행 계획이 시각화됩니다</p>
@@ -149,16 +149,16 @@ export function DAGViewer() {
         elementsSelectable={false}
         proOptions={{ hideAttribution: true }}
       >
-        <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#d1d5db" />
-        <Controls showInteractive={false} className="[&>button]:border-gray-200 [&>button]:bg-white" />
+        <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="#1e293b" />
+        <Controls showInteractive={false} />
         <MiniMap
           nodeColor={(n) => {
             const d = n.data as AgentNodeData;
             const config = AGENT_CONFIGS[d.agentId];
             return config?.color ?? '#6366f1';
           }}
-          maskColor="rgba(255,255,255,0.7)"
-          className="!border !border-gray-200 !rounded-lg !shadow-sm"
+          maskColor="rgba(5,10,24,0.8)"
+          className="!border !border-[color:var(--ap-border)] !rounded-lg !bg-[color:var(--ap-bg-panel)]"
         />
       </ReactFlow>
     </div>

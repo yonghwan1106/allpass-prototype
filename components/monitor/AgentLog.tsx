@@ -69,21 +69,21 @@ export function AgentLog() {
   }, [eventLog]);
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-100">
-        <Activity className="w-4 h-4 text-indigo-600" />
-        <h3 className="text-sm font-semibold text-gray-700">에이전트 활동 로그</h3>
+    <div className="flex flex-col h-full bg-[color:var(--ap-bg-deep)]">
+      <div className="cmd-panel-header">
+        <Activity className="w-4 h-4 text-blue-400" />
+        <h3 className="text-sm font-semibold text-slate-300">에이전트 활동 로그</h3>
         {eventLog.length > 0 && (
-          <span className="ml-auto text-xs bg-indigo-100 text-indigo-700 rounded-full px-2 py-0.5 font-medium">
+          <span className="ml-auto text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full px-2 py-0.5 font-medium">
             {eventLog.length}
           </span>
         )}
       </div>
 
-      <ScrollArea className="flex-1">
-        <div className="p-3 space-y-1.5 font-mono text-xs">
+      <ScrollArea className="flex-1 custom-scrollbar">
+        <div className="p-3 space-y-1.5 terminal-log">
           {eventLog.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-24 text-gray-400">
+            <div className="flex flex-col items-center justify-center h-24 text-slate-600">
               <Activity className="w-6 h-6 mb-1 opacity-30" />
               <p>활동 로그가 여기에 표시됩니다</p>
             </div>
@@ -104,18 +104,18 @@ export function AgentLog() {
                     initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="flex items-start gap-2 py-0.5"
+                    className="terminal-log-entry flex items-start gap-2 py-0.5"
                   >
-                    <span className="shrink-0 text-gray-400 text-[10px] pt-0.5 w-16">{time}</span>
+                    <span className="shrink-0 text-slate-600 text-[10px] pt-0.5 w-16">{time}</span>
                     {config && (
                       <span
                         className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded"
-                        style={{ backgroundColor: config.color + '20', color: config.color }}
+                        style={{ backgroundColor: config.color + '1a', color: config.color }}
                       >
                         {config.icon} {config.nameKo.replace(' 에이전트', '')}
                       </span>
                     )}
-                    <span className="text-gray-600 leading-relaxed">
+                    <span className="text-slate-400 leading-relaxed">
                       {i === eventLog.length - 1 ? (
                         <TypingText text={message} />
                       ) : (

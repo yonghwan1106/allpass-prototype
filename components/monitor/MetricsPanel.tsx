@@ -44,7 +44,7 @@ function CircularProgress({ percent }: { percent: number }) {
 
   return (
     <svg width="48" height="48" viewBox="0 0 48 48">
-      <circle cx="24" cy="24" r={r} fill="none" stroke="#e5e7eb" strokeWidth="4" />
+      <circle cx="24" cy="24" r={r} fill="none" stroke="#1e293b" strokeWidth="4" />
       <motion.circle
         cx="24"
         cy="24"
@@ -59,7 +59,7 @@ function CircularProgress({ percent }: { percent: number }) {
         transition={{ duration: 1, ease: 'easeOut' }}
         transform="rotate(-90 24 24)"
       />
-      <text x="24" y="28" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#1d4ed8">
+      <text x="24" y="28" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#60a5fa">
         {percent}%
       </text>
     </svg>
@@ -83,22 +83,22 @@ function MetricCard({ icon, label, value, unit, color, special }: MetricCardProp
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-xl border border-gray-100 p-3 flex items-center gap-3 shadow-sm"
+      className="glass-card rounded-xl p-4 flex items-center gap-3"
     >
       <div
         className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-        style={{ backgroundColor: color + '20' }}
+        style={{ backgroundColor: color + '26' }}
       >
         <span style={{ color }}>{icon}</span>
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-gray-500 truncate">{label}</p>
+        <p className="text-xs text-slate-500 truncate">{label}</p>
         {special === 'circle' ? (
           <CircularProgress percent={value} />
         ) : (
-          <p className="text-lg font-bold text-gray-800">
+          <p className="text-xl font-bold text-slate-100">
             {displayed}
-            <span className="text-xs font-normal text-gray-500 ml-0.5">{unit}</span>
+            <span className="text-xs font-normal text-slate-500 ml-0.5">{unit}</span>
           </p>
         )}
       </div>
@@ -128,7 +128,7 @@ export function MetricsPanel() {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-2 p-3">
+    <div className="grid grid-cols-2 gap-2 p-3 bg-[color:var(--ap-bg-deep)]">
       {cards.map((card) => (
         <MetricCard key={card.label} {...card} />
       ))}

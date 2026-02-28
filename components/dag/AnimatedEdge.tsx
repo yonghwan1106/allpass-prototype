@@ -28,8 +28,8 @@ export const AnimatedEdge = memo(function AnimatedEdge({
 
   const [edgePath] = getBezierPath({ sourceX, sourceY, sourcePosition, targetX, targetY, targetPosition });
 
-  let stroke = '#d1d5db';
-  if (isDone) stroke = '#22c55e';
+  let stroke = '#334155';
+  if (isDone) stroke = '#10b981';
   else if (isActive) stroke = '#3b82f6';
 
   const animationId = `flow-${id}`;
@@ -53,7 +53,7 @@ export const AnimatedEdge = memo(function AnimatedEdge({
         d={edgePath}
         fill="none"
         stroke={stroke}
-        strokeWidth={isActive || isDone ? 2 : 1.5}
+        strokeWidth={isActive || isDone ? 2.5 : 1.5}
         strokeDasharray={isActive ? '6 3' : undefined}
         style={isActive ? { animation: `${animationId} 0.5s linear infinite` } : undefined}
         className="transition-all duration-500"
@@ -61,7 +61,7 @@ export const AnimatedEdge = memo(function AnimatedEdge({
 
       {/* Particle dot moving along path */}
       {isActive && (
-        <circle r="4" fill="#3b82f6">
+        <circle r="5" fill="#3b82f6" fillOpacity="0.9">
           <animateMotion
             dur="1.2s"
             repeatCount="indefinite"
@@ -71,7 +71,7 @@ export const AnimatedEdge = memo(function AnimatedEdge({
       )}
 
       {isDone && (
-        <circle r="3" fill="#22c55e">
+        <circle r="4" fill="#10b981" fillOpacity="0.9">
           <animateMotion
             dur="2s"
             repeatCount="indefinite"

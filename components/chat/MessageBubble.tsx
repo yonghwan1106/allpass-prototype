@@ -38,14 +38,14 @@ function renderContent(content: string) {
 
 function CitationCard({ citation }: { citation: LegalCitation }) {
   return (
-    <div className="mt-2 border-l-4 border-blue-500 bg-blue-50 rounded-r-md p-3 text-sm">
-      <div className="flex items-center gap-2 font-semibold text-blue-800">
+    <div className="mt-2 border-l-4 border-l-blue-500 bg-blue-500/5 border border-blue-500/10 rounded-r-lg p-3 text-sm">
+      <div className="flex items-center gap-2 font-semibold text-blue-300">
         <Scale className="w-3.5 h-3.5" />
         <span>{citation.lawName}</span>
-        <Badge variant="secondary" className="text-xs">{citation.article}</Badge>
+        <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-400 border-blue-500/20">{citation.article}</Badge>
       </div>
-      <p className="mt-1 text-blue-700 text-xs leading-relaxed">{citation.content}</p>
-      <p className="mt-1 text-blue-500 text-xs">관련도: {citation.relevance}</p>
+      <p className="mt-1 text-blue-400/70 text-xs leading-relaxed">{citation.content}</p>
+      <p className="mt-1 text-blue-500/60 text-xs">관련도: {citation.relevance}</p>
     </div>
   );
 }
@@ -56,20 +56,20 @@ function DocumentChecklist({ documents }: { documents: DocumentInfo[] }) {
       {documents.map((doc, i) => (
         <div key={i} className="flex items-center gap-2 text-sm">
           {doc.status === 'auto-filled' ? (
-            <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+            <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
           ) : doc.status === 'required' ? (
-            <FileText className="w-4 h-4 text-orange-400 shrink-0" />
+            <FileText className="w-4 h-4 text-amber-400 shrink-0" />
           ) : (
-            <Clock className="w-4 h-4 text-gray-400 shrink-0" />
+            <Clock className="w-4 h-4 text-slate-500 shrink-0" />
           )}
           <span className={cn(
-            'text-gray-700',
-            doc.status === 'auto-filled' && 'line-through text-gray-400'
+            'text-slate-300',
+            doc.status === 'auto-filled' && 'line-through text-slate-500'
           )}>
             {doc.name}
           </span>
           {doc.status === 'auto-filled' && (
-            <Badge variant="secondary" className="text-xs py-0">자동완성</Badge>
+            <Badge variant="secondary" className="text-xs py-0 bg-emerald-500/10 text-emerald-400 border-0">자동완성</Badge>
           )}
         </div>
       ))}
@@ -91,8 +91,8 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       {/* Avatar */}
       {!isUser && (
         <div
-          className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm"
-          style={{ backgroundColor: agentConfig?.color ?? '#6366f1' + '20' }}
+          className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm"
+          style={{ backgroundColor: (agentConfig?.color ?? '#6366f1') + '26' }}
         >
           {agentConfig?.icon ?? '🤖'}
         </div>
@@ -101,16 +101,16 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       <div className={cn('flex flex-col max-w-[75%]', isUser ? 'items-end' : 'items-start')}>
         {/* Agent name */}
         {!isUser && agentConfig && (
-          <span className="text-xs text-gray-500 mb-1 ml-1">{agentConfig.nameKo}</span>
+          <span className="text-xs text-slate-500 mb-1 ml-1">{agentConfig.nameKo}</span>
         )}
 
         {/* Bubble */}
         <div
           className={cn(
-            'rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm',
+            'rounded-2xl px-4 py-3 text-sm leading-relaxed',
             isUser
               ? 'bg-blue-600 text-white rounded-br-sm'
-              : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+              : 'bg-[color:var(--ap-bg-card)] text-slate-200 border border-[color:var(--ap-border)] rounded-bl-sm [&_strong]:text-white'
           )}
         >
           {renderContent(message.content)}
@@ -127,14 +127,14 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
         {/* Documents */}
         {message.documents && message.documents.length > 0 && (
-          <Card className="mt-2 p-3 w-full">
-            <p className="text-xs font-semibold text-gray-600 mb-2">필요 서류 목록</p>
+          <Card className="mt-2 p-3 w-full bg-[color:var(--ap-bg-card)] border-[color:var(--ap-border)]">
+            <p className="text-xs font-semibold text-slate-400 mb-2">필요 서류 목록</p>
             <DocumentChecklist documents={message.documents} />
           </Card>
         )}
 
         {/* Timestamp */}
-        <span className="text-xs text-gray-400 mt-1 px-1">
+        <span className="text-xs text-slate-600 mt-1 px-1">
           {new Date(message.timestamp).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>

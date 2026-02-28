@@ -32,7 +32,7 @@ export function StateMachine() {
   const isBranch = workflowState === 'RETRY' || workflowState === 'HUMAN_REVIEW';
 
   return (
-    <div className="bg-white border-b border-gray-100 px-4 py-3">
+    <div className="bg-[color:var(--ap-bg-panel)] border-b border-[color:var(--ap-border)] px-4 py-3">
       <div className="flex items-center gap-0">
         {MAIN_STATES.map((item, i) => {
           const isDone = currentIdx > i && !isBranch;
@@ -46,10 +46,10 @@ export function StateMachine() {
                   className={cn(
                     'w-8 h-8 rounded-full flex items-center justify-center text-sm border-2 transition-all duration-500',
                     isDone
-                      ? 'bg-green-500 border-green-500'
+                      ? 'bg-emerald-600 border-emerald-500'
                       : isCurrent
-                        ? 'bg-blue-600 border-blue-600'
-                        : 'bg-gray-100 border-gray-200'
+                        ? 'bg-blue-600 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
+                        : 'bg-slate-800 border-slate-600'
                   )}
                   animate={isCurrent ? { scale: [1, 1.08, 1] } : { scale: 1 }}
                   transition={isCurrent ? { duration: 1.2, repeat: Infinity } : {}}
@@ -57,7 +57,7 @@ export function StateMachine() {
                   {isDone ? (
                     <CheckCircle className="w-4 h-4 text-white" />
                   ) : (
-                    <span className={cn('text-xs', isCurrent ? 'text-white' : 'text-gray-400')}>
+                    <span className={cn('text-xs', isCurrent ? 'text-white' : 'text-slate-500')}>
                       {item.icon}
                     </span>
                   )}
@@ -71,7 +71,7 @@ export function StateMachine() {
                 </motion.div>
                 <span className={cn(
                   'text-xs whitespace-nowrap',
-                  isCurrent ? 'text-blue-600 font-semibold' : isDone ? 'text-green-600' : 'text-gray-400'
+                  isCurrent ? 'text-blue-400 font-semibold' : isDone ? 'text-emerald-400' : 'text-slate-500'
                 )}>
                   {item.label}
                 </span>
@@ -79,9 +79,9 @@ export function StateMachine() {
 
               {/* Connector line */}
               {i < MAIN_STATES.length - 1 && (
-                <div className="w-12 h-0.5 mx-1 mb-5 relative bg-gray-200 overflow-hidden">
+                <div className="w-12 h-0.5 mx-1 mb-5 relative bg-slate-700 overflow-hidden">
                   <motion.div
-                    className="absolute inset-y-0 left-0 bg-green-400"
+                    className="absolute inset-y-0 left-0 bg-emerald-500"
                     initial={{ width: '0%' }}
                     animate={{ width: isDone ? '100%' : '0%' }}
                     transition={{ duration: 0.5 }}
@@ -94,24 +94,25 @@ export function StateMachine() {
 
         {/* Branch states */}
         <div className="ml-4 flex items-center gap-2">
-          {BRANCH_STATES.map((branch) => (
-            <div
-              key={branch.state}
-              className={cn(
-                'flex items-center gap-1 px-2 py-1 rounded-full text-xs border transition-all duration-300',
-                workflowState === branch.state
-                  ? 'font-semibold shadow-md'
-                  : 'opacity-40 border-gray-200 text-gray-400'
-              )}
-              style={
-                workflowState === branch.state
-                  ? { backgroundColor: branch.color + '20', borderColor: branch.color, color: branch.color }
-                  : {}
-              }
-            >
-              <span>{branch.label}</span>
-            </div>
-          ))}
+          {BRANCH_STATES.map((branch) => {
+            const isActive = workflowState === branch.state;
+            const isRetry = branch.state === 'RETRY';
+            return (
+              <div
+                key={branch.state}
+                className={cn(
+                  'flex items-center gap-1 px-2 py-1 rounded-full text-xs border transition-all duration-300',
+                  isActive
+                    ? isRetry
+                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 font-semibold'
+                      : 'bg-violet-500/10 text-violet-400 border-violet-500/20 font-semibold'
+                    : 'opacity-40 border-slate-700 text-slate-500'
+                )}
+              >
+                <span>{branch.label}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

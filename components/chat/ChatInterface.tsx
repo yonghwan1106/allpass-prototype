@@ -219,10 +219,10 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white border-t border-gray-100">
+    <div className="flex flex-col h-full bg-[color:var(--ap-bg-base)] border-t border-[color:var(--ap-border)]">
       {/* Scenario quick-select */}
-      <div className="flex items-center gap-2 px-4 py-2 border-b border-gray-100 bg-gray-50 overflow-x-auto shrink-0">
-        <span className="text-xs text-gray-400 shrink-0">시나리오:</span>
+      <div className="flex items-center gap-2 px-4 py-2 border-b border-[color:var(--ap-border)] bg-[color:var(--ap-bg-panel)] overflow-x-auto shrink-0">
+        <span className="text-xs text-slate-500 shrink-0">시나리오:</span>
         {(Object.values(SCENARIOS) as (typeof SCENARIOS)[ScenarioId][]).map((scenario) => (
           <button
             key={scenario.id}
@@ -230,16 +230,35 @@ export function ChatInterface() {
             className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150"
             style={
               currentScenario === scenario.id
-                ? { backgroundColor: scenario.color, color: 'white', borderColor: scenario.color }
-                : { backgroundColor: 'white', color: '#6b7280', borderColor: '#e5e7eb' }
+                ? {
+                    backgroundColor: scenario.color,
+                    color: 'white',
+                    borderColor: scenario.color,
+                    boxShadow: `0 0 12px ${scenario.color}33`,
+                  }
+                : {
+                    backgroundColor: 'var(--ap-bg-card)',
+                    color: '#94a3b8',
+                    borderColor: 'var(--ap-border)',
+                  }
             }
+            onMouseEnter={(e) => {
+              if (currentScenario !== scenario.id) {
+                (e.currentTarget as HTMLButtonElement).style.borderColor = '#64748b';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (currentScenario !== scenario.id) {
+                (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--ap-border)';
+              }
+            }}
           >
             {scenario.icon} {scenario.title}
           </button>
         ))}
         <button
           onClick={handleReset}
-          className="ml-auto shrink-0 p-1.5 rounded-full hover:bg-gray-200 text-gray-400 transition-colors"
+          className="ml-auto shrink-0 p-1.5 rounded-full hover:bg-white/5 text-slate-500 transition-colors"
           title="초기화"
         >
           <RotateCcw className="w-3.5 h-3.5" />
@@ -253,11 +272,11 @@ export function ChatInterface() {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center justify-center py-12 text-gray-400"
+              className="flex flex-col items-center justify-center py-12"
             >
-              <span className="text-4xl mb-3">🤖</span>
-              <p className="text-sm font-medium text-gray-500">All-Pass AI에 민원을 입력하세요</p>
-              <p className="text-xs mt-1 text-gray-400">위의 시나리오를 선택하거나 직접 입력하세요</p>
+              <span className="text-4xl mb-3 opacity-60">🤖</span>
+              <p className="text-sm font-medium text-slate-400">All-Pass AI에 민원을 입력하세요</p>
+              <p className="text-xs mt-1 text-slate-500">위의 시나리오를 선택하거나 직접 입력하세요</p>
             </motion.div>
           )}
 
@@ -271,7 +290,7 @@ export function ChatInterface() {
       </ScrollArea>
 
       {/* Input area */}
-      <div className="shrink-0 border-t border-gray-100 p-3">
+      <div className="shrink-0 border-t border-[color:var(--ap-border)] bg-[color:var(--ap-bg-panel)] p-3">
         <div className="flex items-end gap-2">
           <textarea
             ref={textareaRef}
@@ -281,17 +300,17 @@ export function ChatInterface() {
             placeholder="민원 내용을 입력하세요... (Shift+Enter로 줄바꿈)"
             disabled={isStreaming}
             rows={2}
-            className="flex-1 resize-none rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="flex-1 resize-none rounded-xl border border-[color:var(--ap-border)] bg-[color:var(--ap-bg-card)] px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           />
           <button
             onClick={() => sendMessage(inputValue)}
             disabled={isStreaming || !inputValue.trim()}
-            className="shrink-0 w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+            className="shrink-0 w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center hover:bg-blue-500 hover:shadow-[0_0_12px_rgba(59,130,246,0.4)] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             <Send className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-xs text-gray-400 mt-1.5 ml-1">
+        <p className="text-xs text-slate-600 mt-1.5 ml-1">
           Enter로 전송 · Shift+Enter로 줄바꿈
         </p>
       </div>
