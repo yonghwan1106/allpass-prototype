@@ -1,0 +1,71 @@
+{
+  "id": "welfare",
+  "dag": {
+    "id": "dag-welfare",
+    "title": "긴급복지 연계 처리 DAG",
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "위기 상황 분석",
+        "agentId": "master",
+        "status": "pending",
+        "description": "실직 위기 상황 감지 및 분류",
+        "dependencies": []
+      },
+      {
+        "id": "n2",
+        "label": "실업급여 자격 확인",
+        "agentId": "legal",
+        "status": "pending",
+        "description": "고용보험법 수급자격 요건 분석",
+        "dependencies": ["n1"]
+      },
+      {
+        "id": "n3",
+        "label": "고용보험 이력 조회",
+        "agentId": "api",
+        "status": "pending",
+        "description": "고용보험 가입 이력 API 조회",
+        "dependencies": ["n1"]
+      },
+      {
+        "id": "n4",
+        "label": "복지 혜택 매칭",
+        "agentId": "document",
+        "status": "pending",
+        "description": "추가 복지 혜택 선제적 안내",
+        "dependencies": ["n2", "n3"]
+      },
+      {
+        "id": "n5",
+        "label": "결과 검증",
+        "agentId": "validator",
+        "status": "pending",
+        "description": "급여액 및 자격 요건 교차 검증",
+        "dependencies": ["n4"]
+      }
+    ],
+    "edges": [
+      { "id": "e1", "source": "n1", "target": "n2" },
+      { "id": "e2", "source": "n1", "target": "n3" },
+      { "id": "e3", "source": "n2", "target": "n4" },
+      { "id": "e4", "source": "n3", "target": "n4" },
+      { "id": "e5", "source": "n4", "target": "n5" }
+    ]
+  },
+  "simulatedResponses": {
+    "master_intent": {
+      "intent": "실직 후 실업급여 신청 및 긴급 복지 지원 안내",
+      "category": "welfare",
+      "complexity": "complex",
+      "requiredAgents": ["legal", "document", "api", "validator"],
+      "summary": "갑작스러운 실직 상황에서 실업급여 신청 절차 및 연계 복지 혜택 선제적 안내"
+    },
+    "legal": "고용보험법 제40조(구직급여 수급요건): 이직 전 18개월 내 180일 이상 가입 필요. 제42조: 이직 후 즉시 고용센터 방문 신고. 비자발적 이직(해고)의 경우 수급 가능. 이직일로부터 12개월 이내 신청 필수.",
+    "document": "실업급여 신청에 필요한 서류: 고용보험 피보험자격 상실신고서(회사 제출), 이직확인서, 신분증. 고용센터 방문 시 구직등록 필수.",
+    "api": "고용보험 가입 이력 조회 완료. 현 직장 2년 3개월 가입. 수급자격 충족 (180일 이상). 예상 수급액 일 66,000원, 수급 기간 180일.",
+    "scheduler": "고용센터 방문 예약: 2026-03-01(일) → 첫 방문 가능일 2026-03-02(월) 오전. 온라인 워크넷 구직등록 선행 권장.",
+    "validator": "검증 완료. 신뢰도 96%. 수급자격 충족 확인. 예상 수급액 계산 정확.",
+    "final": "힘드실 때 찾아오셨군요. 걱정하지 마세요, 차근차근 도와드릴게요.\n\n**실업급여 수급 가능** ✅\n고용보험 가입 기간이 충분하여 실업급여를 받으실 수 있습니다.\n\n**예상 지원 내용**\n- 구직급여: 일 66,000원 × 180일 = 약 1,188만원\n- 수급 기간: 약 6개월\n\n**신청 절차** (총 3단계)\n1. 워크넷(work.go.kr)에서 구직등록\n2. 가까운 고용센터 방문 (실업 신고)\n3. 2주마다 재취업 활동 보고\n\n**추가 지원 혜택** (선제 안내)\n- 국민취업지원제도: 월 50만원 + 취업지원 서비스\n- 긴급복지지원: 생계비 최대 162만원\n- 의료급여: 건강보험료 납부 유예 가능\n\n고용센터는 내일 오전 방문하시면 바로 처리 가능합니다."
+  }
+}
