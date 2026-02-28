@@ -125,7 +125,7 @@ export function DAGViewer() {
 
   if (!dag) {
     return (
-      <div className="flex flex-col items-center justify-center h-full bg-[color:var(--ap-bg-deep)] text-slate-500">
+      <div className="flex flex-col items-center justify-center h-full bg-ap-deep text-slate-500">
         <GitFork className="w-12 h-12 mb-3 opacity-20" />
         <p className="text-sm font-medium">DAG 워크플로우</p>
         <p className="text-xs mt-1 opacity-70">민원을 입력하면 실행 계획이 시각화됩니다</p>
@@ -158,7 +158,7 @@ export function DAGViewer() {
             return config?.color ?? '#6366f1';
           }}
           maskColor="rgba(5,10,24,0.8)"
-          className="!border !border-[color:var(--ap-border)] !rounded-lg !bg-[color:var(--ap-bg-panel)]"
+          className="!border !border-ap-border !rounded-lg !bg-ap-panel"
         />
       </ReactFlow>
     </div>

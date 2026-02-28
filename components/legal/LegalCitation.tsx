@@ -15,7 +15,7 @@ export function LegalCitation({ citation }: LegalCitationProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card className="bg-[color:var(--ap-bg-card)] border border-[color:var(--ap-border)] border-l-4 border-l-blue-500 overflow-hidden rounded-xl hover:bg-[color:var(--ap-bg-elevated)] transition-colors">
+    <Card className="bg-ap-card border border-ap-border border-l-4 border-l-blue-500 overflow-hidden rounded-xl hover:bg-ap-elevated transition-colors">
       <div
         className="flex items-start gap-3 p-3 cursor-pointer transition-colors"
         onClick={() => setExpanded(!expanded)}
@@ -44,7 +44,7 @@ export function LegalCitation({ citation }: LegalCitationProps) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-3 pb-3 pt-0 ml-11 border-t border-[color:var(--ap-border)]">
+            <div className="px-3 pb-3 pt-0 ml-11 border-t border-ap-border">
               <p className="text-sm text-slate-300 mt-2 leading-relaxed">{citation.content}</p>
               <div className="mt-2 flex items-center gap-2">
                 <span className="text-xs text-slate-500">관련도:</span>

@@ -31,7 +31,7 @@ export function TypingIndicator() {
             {activeAgent.icon}
           </div>
 
-          <div className="flex items-center gap-2 bg-[color:var(--ap-bg-card)] border border-[color:var(--ap-border)] rounded-2xl rounded-bl-sm px-4 py-3">
+          <div className="flex items-center gap-2 bg-ap-card border border-ap-border rounded-2xl rounded-bl-sm px-4 py-3">
             {/* Bouncing dots */}
             <div className="flex items-center gap-1">
               {[0, 1, 2].map((i) => (

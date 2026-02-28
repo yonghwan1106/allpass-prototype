@@ -110,7 +110,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             'rounded-2xl px-4 py-3 text-sm leading-relaxed',
             isUser
               ? 'bg-blue-600 text-white rounded-br-sm'
-              : 'bg-[color:var(--ap-bg-card)] text-slate-200 border border-[color:var(--ap-border)] rounded-bl-sm [&_strong]:text-white'
+              : 'bg-ap-card text-slate-200 border border-ap-border rounded-bl-sm [&_strong]:text-white'
           )}
         >
           {renderContent(message.content)}
@@ -127,7 +127,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
         {/* Documents */}
         {message.documents && message.documents.length > 0 && (
-          <Card className="mt-2 p-3 w-full bg-[color:var(--ap-bg-card)] border-[color:var(--ap-border)]">
+          <Card className="mt-2 p-3 w-full bg-ap-card border-ap-border">
             <p className="text-xs font-semibold text-slate-400 mb-2">필요 서류 목록</p>
             <DocumentChecklist documents={message.documents} />
           </Card>

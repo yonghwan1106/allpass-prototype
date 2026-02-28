@@ -128,7 +128,7 @@ export function MetricsPanel() {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-2 p-3 bg-[color:var(--ap-bg-deep)]">
+    <div className="grid grid-cols-2 gap-2 p-3 bg-ap-deep">
       {cards.map((card) => (
         <MetricCard key={card.label} {...card} />
       ))}

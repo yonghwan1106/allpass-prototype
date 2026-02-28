@@ -10,7 +10,7 @@ export function LegalSearchPanel() {
   const citations = useAgentStore((s) => s.citations);
 
   return (
-    <div className="flex flex-col h-full bg-[color:var(--ap-bg-deep)]">
+    <div className="flex flex-col h-full bg-ap-deep">
       <div className="cmd-panel-header">
         <Scale className="w-4 h-4 text-blue-400" />
         <h3 className="text-sm font-semibold text-slate-300">법령 인용</h3>

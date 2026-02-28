@@ -47,7 +47,7 @@ function DemoContent() {
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
 
         {/* Left column: DAG (full height on desktop, 40% on mobile) */}
-        <div className="flex flex-col lg:w-[58%] border-b lg:border-b-0 lg:border-r border-[color:var(--ap-border)] overflow-hidden" style={{ height: '55%', flex: '0 0 auto' }}>
+        <div className="flex flex-col lg:w-[58%] border-b lg:border-b-0 lg:border-r border-ap-border overflow-hidden" style={{ height: '55%', flex: '0 0 auto' }}>
           {/* DAG header */}
           <div className="shrink-0 flex items-center gap-2 px-3 py-2 cmd-panel-header">
             <span className="text-xs font-semibold text-slate-400">DAG 워크플로우</span>
@@ -60,7 +60,7 @@ function DemoContent() {
         {/* Right column: Tabs */}
         <div className="flex flex-col lg:w-[42%] overflow-hidden" style={{ height: '55%', flex: '0 0 auto' }}>
           <Tabs defaultValue="log" className="flex flex-col h-full">
-            <TabsList className="shrink-0 rounded-none border-b border-[color:var(--ap-border)] bg-transparent justify-start px-2 h-9 gap-1">
+            <TabsList className="shrink-0 rounded-none border-b border-ap-border bg-transparent justify-start px-2 h-9 gap-1">
               <TabsTrigger value="log" className="text-xs gap-1.5 data-[state=active]:bg-white/5 data-[state=active]:text-blue-400 text-slate-500 hover:text-slate-300 rounded-md">
                 <Activity className="w-3 h-3" /> 활동 로그
               </TabsTrigger>
@@ -92,7 +92,7 @@ function DemoContent() {
       </div>
 
       {/* Bottom: Chat — fixed height */}
-      <div className="shrink-0 border-t border-[color:var(--ap-border)]" style={{ height: '35%', minHeight: '220px', background: 'var(--ap-bg-panel)' }}>
+      <div className="shrink-0 border-t border-ap-border" style={{ height: '35%', minHeight: '220px', background: 'var(--ap-bg-panel)' }}>
         <ChatInterface />
       </div>
     </div>

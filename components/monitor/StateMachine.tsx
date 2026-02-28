@@ -32,7 +32,7 @@ export function StateMachine() {
   const isBranch = workflowState === 'RETRY' || workflowState === 'HUMAN_REVIEW';
 
   return (
-    <div className="bg-[color:var(--ap-bg-panel)] border-b border-[color:var(--ap-border)] px-4 py-3">
+    <div className="bg-ap-panel border-b border-ap-border px-4 py-3">
       <div className="flex items-center gap-0">
         {MAIN_STATES.map((item, i) => {
           const isDone = currentIdx > i && !isBranch;

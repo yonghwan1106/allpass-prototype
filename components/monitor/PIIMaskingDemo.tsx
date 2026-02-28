@@ -37,7 +37,7 @@ export function PIIMaskingDemo() {
   const piiEvents = useAgentStore((s) => s.piiEvents);
 
   return (
-    <div className="flex flex-col h-full bg-[color:var(--ap-bg-deep)]">
+    <div className="flex flex-col h-full bg-ap-deep">
       <div className="cmd-panel-header">
         <Shield className="w-4 h-4 text-violet-400" />
         <h3 className="text-sm font-semibold text-slate-300">PII 마스킹 시연</h3>
@@ -57,7 +57,7 @@ export function PIIMaskingDemo() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="bg-[color:var(--ap-bg-card)] border border-[color:var(--ap-border)] rounded-xl p-4 space-y-2"
+                className="bg-ap-card border border-ap-border rounded-xl p-4 space-y-2"
               >
                 {/* PII type badges */}
                 <div className="flex flex-wrap gap-1 mb-2">
@@ -78,7 +78,7 @@ export function PIIMaskingDemo() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.1 }}
-                    className="flex-1 min-w-0 bg-[color:var(--ap-bg-deep)] rounded-lg p-3 border border-rose-500/20"
+                    className="flex-1 min-w-0 bg-ap-deep rounded-lg p-3 border border-rose-500/20"
                   >
                     <p className="text-[10px] text-rose-400 font-semibold mb-1">원본 텍스트</p>
                     <p className="text-slate-300 leading-relaxed break-words">
@@ -104,7 +104,7 @@ export function PIIMaskingDemo() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="flex-1 min-w-0 bg-[color:var(--ap-bg-deep)] rounded-lg p-3 border border-violet-500/20"
+                    className="flex-1 min-w-0 bg-ap-deep rounded-lg p-3 border border-violet-500/20"
                   >
                     <p className="text-[10px] text-violet-400 font-semibold mb-1">마스킹 처리</p>
                     <p className="text-slate-300 leading-relaxed break-words font-mono">
