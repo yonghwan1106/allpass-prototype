@@ -1,71 +1,112 @@
 {
   "id": "welfare",
+  "title": "긴급복지 연계 및 실업급여 신청",
+  "persona": {
+    "name": "이위기",
+    "age": 42,
+    "situation": "갑작스러운 실직(권고사직)",
+    "employmentHistory": [
+      {
+        "employer": "(주)한국제조",
+        "startDate": "2019-01-15",
+        "endDate": "2026-02-28",
+        "reason": "권고사직",
+        "insuredDays": 683
+      }
+    ],
+    "completedSteps": []
+  },
+  "input": "갑자기 회사에서 잘렸는데... 실업급여 받으려면 어떻게 해야 하나요?",
   "dag": {
-    "id": "dag-welfare",
-    "title": "긴급복지 연계 처리 DAG",
     "nodes": [
       {
-        "id": "n1",
-        "label": "위기 상황 분석",
-        "agentId": "master",
-        "status": "pending",
-        "description": "실직 위기 상황 감지 및 분류",
+        "id": "step-1",
+        "label": "마이데이터 분석",
+        "agentId": "api",
+        "description": "고용보험 가입이력, 소득정보, 가족관계 등 마이데이터 수집 및 분석",
         "dependencies": []
       },
       {
-        "id": "n2",
-        "label": "실업급여 자격 확인",
+        "id": "step-2",
+        "label": "실업급여 자격확인",
         "agentId": "legal",
-        "status": "pending",
-        "description": "고용보험법 수급자격 요건 분석",
-        "dependencies": ["n1"]
+        "description": "고용보험법 제40조 수급요건 충족 여부 법령 기반 판단",
+        "dependencies": ["step-1"]
       },
       {
-        "id": "n3",
-        "label": "고용보험 이력 조회",
+        "id": "step-3",
+        "label": "긴급복지 수급자격 검토",
+        "agentId": "legal",
+        "description": "긴급복지지원법상 위기사유 해당 여부 및 소득 기준 검토",
+        "dependencies": ["step-1"]
+      },
+      {
+        "id": "step-4",
+        "label": "추가지원 탐색",
         "agentId": "api",
-        "status": "pending",
-        "description": "고용보험 가입 이력 API 조회",
-        "dependencies": ["n1"]
+        "description": "국민취업지원제도, 주거지원, 의료비지원, 자녀교육비 등 연계 가능 복지 탐색",
+        "dependencies": ["step-2", "step-3"]
       },
       {
-        "id": "n4",
-        "label": "복지 혜택 매칭",
+        "id": "step-5",
+        "label": "선제적 복지연계",
         "agentId": "document",
-        "status": "pending",
-        "description": "추가 복지 혜택 선제적 안내",
-        "dependencies": ["n2", "n3"]
-      },
-      {
-        "id": "n5",
-        "label": "결과 검증",
-        "agentId": "validator",
-        "status": "pending",
-        "description": "급여액 및 자격 요건 교차 검증",
-        "dependencies": ["n4"]
+        "description": "신청하지 않아도 받을 수 있는 복지 자동 매칭 및 신청서 자동완성",
+        "dependencies": ["step-4"]
       }
     ],
     "edges": [
-      { "id": "e1", "source": "n1", "target": "n2" },
-      { "id": "e2", "source": "n1", "target": "n3" },
-      { "id": "e3", "source": "n2", "target": "n4" },
-      { "id": "e4", "source": "n3", "target": "n4" },
-      { "id": "e5", "source": "n4", "target": "n5" }
+      { "source": "step-1", "target": "step-2" },
+      { "source": "step-1", "target": "step-3" },
+      { "source": "step-2", "target": "step-4" },
+      { "source": "step-3", "target": "step-4" },
+      { "source": "step-4", "target": "step-5" }
     ]
+  },
+  "crisisMonitoring": {
+    "description": "위기정보 44종 모니터링 대시보드",
+    "indicators": [
+      { "category": "고용", "signals": ["고용보험 상실", "급여이체 중단", "4대보험 미납"] },
+      { "category": "금융", "signals": ["신용카드 연체", "대출 연체", "통장 잔액 급감"] },
+      { "category": "주거", "signals": ["전기료 체납", "가스 체납", "월세 연체"] },
+      { "category": "의료", "signals": ["건강보험료 체납", "의료기관 미이용 장기화"] },
+      { "category": "가족", "signals": ["아동수당 미청구", "보육료 미납"] }
+    ],
+    "detectedSignals": ["고용보험 상실", "소득 중단"],
+    "riskLevel": "high",
+    "triggeredAt": "2026-02-28"
+  },
+  "mockApiResponses": {
+    "employment-insurance": {
+      "insuredDays": 683,
+      "employer": "(주)한국제조",
+      "employmentStartDate": "2019-01-15",
+      "separationDate": "2026-02-28",
+      "separationReason": "권고사직",
+      "isEligible": true,
+      "estimatedDailyBenefit": 66000,
+      "estimatedPayDays": 180,
+      "totalEstimatedBenefit": 11880000
+    }
+  },
+  "expectedOutput": {
+    "totalSteps": 5,
+    "parallelSteps": [["step-2", "step-3"]],
+    "estimatedTime": "31초",
+    "timeReduction": "88%",
+    "proactiveWelfareMatched": ["구직급여", "국민취업지원제도", "긴급복지지원", "건강보험료납부유예", "국민연금납부예외"]
   },
   "simulatedResponses": {
     "master_intent": {
       "intent": "실직 후 실업급여 신청 및 긴급 복지 지원 안내",
       "category": "welfare",
       "complexity": "complex",
-      "requiredAgents": ["legal", "document", "api", "validator"],
+      "requiredAgents": ["legal", "document", "api"],
       "summary": "갑작스러운 실직 상황에서 실업급여 신청 절차 및 연계 복지 혜택 선제적 안내"
     },
-    "legal": "고용보험법 제40조(구직급여 수급요건): 이직 전 18개월 내 180일 이상 가입 필요. 제42조: 이직 후 즉시 고용센터 방문 신고. 비자발적 이직(해고)의 경우 수급 가능. 이직일로부터 12개월 이내 신청 필수.",
-    "document": "실업급여 신청에 필요한 서류: 고용보험 피보험자격 상실신고서(회사 제출), 이직확인서, 신분증. 고용센터 방문 시 구직등록 필수.",
-    "api": "고용보험 가입 이력 조회 완료. 현 직장 2년 3개월 가입. 수급자격 충족 (180일 이상). 예상 수급액 일 66,000원, 수급 기간 180일.",
-    "scheduler": "고용센터 방문 예약: 2026-03-01(일) → 첫 방문 가능일 2026-03-02(월) 오전. 온라인 워크넷 구직등록 선행 권장.",
-    "validator": "검증 완료. 신뢰도 96%. 수급자격 충족 확인. 예상 수급액 계산 정확.",
-    "final": "힘드실 때 찾아오셨군요. 걱정하지 마세요, 차근차근 도와드릴게요.\n\n**실업급여 수급 가능** ✅\n고용보험 가입 기간이 충분하여 실업급여를 받으실 수 있습니다.\n\n**예상 지원 내용**\n- 구직급여: 일 66,000원 × 180일 = 약 1,188만원\n- 수급 기간: 약 6개월\n\n**신청 절차** (총 3단계)\n1. 워크넷(work.go.kr)에서 구직등록\n2. 가까운 고용센터 방문 (실업 신고)\n3. 2주마다 재취업 활동 보고\n\n**추가 지원 혜택** (선제 안내)\n- 국민취업지원제도: 월 50만원 + 취업지원 서비스\n- 긴급복지지원: 생계비 최대 162만원\n- 의료급여: 건강보험료 납부 유예 가능\n\n고용센터는 내일 오전 방문하시면 바로 처리 가능합니다."
+    "legal": "고용보험법 제40조(구직급여 수급요건): 이직 전 18개월 내 피보험단위기간 180일 이상 필요 → 충족(683일). 제42조: 이직 후 지체 없이 고용센터 방문 신고. 권고사직(비자발적 이직)이므로 수급자격 제한 없음. 이직일로부터 12개월 이내 신청 필수.",
+    "document": "필요 서류: 이직확인서(회사가 고용센터에 제출), 신분증. 고용센터 방문 전 워크넷(work.go.kr) 구직등록 선행 권장. 이직확인서는 회사가 14일 이내 제출 의무.",
+    "api": "마이데이터 분석 완료. 고용보험 가입기간 683일(충족). 최근 3개월 평균임금 기준 구직급여 일액 66,000원. 수급기간 180일. 추가 연계 복지 5종 확인.",
+    "final": "힘드셨겠어요. 제가 빠르게 정리해 드릴게요.\n\n**실업급여 수급 가능합니다** (마이데이터 자동 확인 완료)\n고용보험 가입기간 683일로 요건(180일)을 충분히 충족합니다.\n\n**예상 지원 내용**\n- 구직급여: 일 66,000원 × 180일 = 약 1,188만원\n- 수급기간: 6개월\n\n**지금 당장 하실 일**\n1. 워크넷(work.go.kr)에서 구직등록 (온라인, 5분 소요)\n2. 가까운 고용센터 방문 → 실업신고 + 수급자격 인정신청\n3. 이후 2주마다 재취업 활동 보고\n\n**함께 연계되는 복지 5종** (선제 안내)\n- 국민취업지원제도: 월 50만원 + 취업지원 (자동 신청서 완성)\n- 긴급복지지원: 생계비 최대 162만원 (위기사유 해당 확인됨)\n- 건강보험료 납부유예: 6개월 유예 (자동 신청서 완성)\n- 국민연금 납부예외: 실직 기간 납부 면제 신청 가능\n- 주거급여: 소득 기준 검토 후 안내 예정\n\n내일 오전 고용센터 방문을 권장드립니다. 신청서는 미리 자동완성 해드렸습니다."
   }
 }

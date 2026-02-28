@@ -1,90 +1,106 @@
 {
   "id": "restaurant",
+  "title": "소상공인 식당 창업",
+  "persona": {
+    "name": "김도전",
+    "age": 34,
+    "situation": "연남동에서 파스타 전문점 창업 준비 중",
+    "completedSteps": ["임대차 계약 완료"]
+  },
+  "input": "연남동 383-22번지 1층에 파스타 가게를 내려고 해요. 임대차 계약은 했어요.",
   "dag": {
-    "id": "dag-restaurant",
-    "title": "소상공인 식당 창업 처리 DAG",
     "nodes": [
       {
-        "id": "n1",
-        "label": "PII 마스킹",
-        "agentId": "master",
-        "status": "pending",
-        "description": "주소, 개인정보 마스킹 처리",
+        "id": "step-1",
+        "label": "건축물대장 조회",
+        "agentId": "api",
+        "description": "해당 주소의 건축물대장을 조회하여 용도와 면적 확인",
         "dependencies": []
       },
       {
-        "id": "n2",
-        "label": "법령 검색",
+        "id": "step-2",
+        "label": "용도변경 검토",
         "agentId": "legal",
-        "status": "pending",
-        "description": "식품위생법, 건축법 관련 조문 검색",
-        "dependencies": ["n1"]
+        "description": "일반음식점 영업이 가능한 용도인지 법령 기반 검토",
+        "dependencies": ["step-1"]
       },
       {
-        "id": "n3",
-        "label": "건축물대장 조회",
-        "agentId": "api",
-        "status": "pending",
-        "description": "공공데이터 포털 건축물대장 API 호출",
-        "dependencies": ["n1"]
-      },
-      {
-        "id": "n4",
-        "label": "서류 안내",
+        "id": "step-3",
+        "label": "위생교육 이수 안내",
         "agentId": "document",
-        "status": "pending",
-        "description": "영업허가 필요 서류 목록 생성",
-        "dependencies": ["n2", "n3"]
+        "description": "식품위생교육 이수 절차 및 일정 안내",
+        "dependencies": []
       },
       {
-        "id": "n5",
-        "label": "위생교육 일정",
+        "id": "step-4",
+        "label": "건강진단(보건증) 발급",
         "agentId": "scheduler",
-        "status": "pending",
-        "description": "식품위생교육 일정 최적화",
-        "dependencies": ["n4"]
+        "description": "보건소 건강진단 예약 및 일정 최적화",
+        "dependencies": []
       },
       {
-        "id": "n6",
-        "label": "결과 검증",
-        "agentId": "validator",
-        "status": "pending",
-        "description": "전체 결과 교차 검증",
-        "dependencies": ["n4", "n5"]
+        "id": "step-5",
+        "label": "영업허가 신청",
+        "agentId": "document",
+        "description": "영업허가 신청서류 목록 생성 및 자동완성",
+        "dependencies": ["step-1", "step-2", "step-3", "step-4"]
       },
       {
-        "id": "n7",
-        "label": "최종 응답 합성",
-        "agentId": "master",
-        "status": "pending",
-        "description": "사용자 친화적 최종 응답 생성",
-        "dependencies": ["n6"]
+        "id": "step-6",
+        "label": "사업자등록 신청",
+        "agentId": "api",
+        "description": "홈택스 사업자등록 신청 연계",
+        "dependencies": ["step-5"]
+      },
+      {
+        "id": "step-7",
+        "label": "소상공인 혜택 안내",
+        "agentId": "api",
+        "description": "소상공인 지원금, 세제혜택 등 안내",
+        "dependencies": ["step-6"]
       }
     ],
     "edges": [
-      { "id": "e1", "source": "n1", "target": "n2" },
-      { "id": "e2", "source": "n1", "target": "n3" },
-      { "id": "e3", "source": "n2", "target": "n4" },
-      { "id": "e4", "source": "n3", "target": "n4" },
-      { "id": "e5", "source": "n4", "target": "n5" },
-      { "id": "e6", "source": "n4", "target": "n6" },
-      { "id": "e7", "source": "n5", "target": "n6" },
-      { "id": "e8", "source": "n6", "target": "n7" }
+      { "source": "step-1", "target": "step-2" },
+      { "source": "step-1", "target": "step-5" },
+      { "source": "step-2", "target": "step-5" },
+      { "source": "step-3", "target": "step-5" },
+      { "source": "step-4", "target": "step-5" },
+      { "source": "step-5", "target": "step-6" },
+      { "source": "step-6", "target": "step-7" }
     ]
+  },
+  "mockApiResponses": {
+    "building-registry": {
+      "address": "서울특별시 마포구 연남동 383-22",
+      "buildingName": "연남빌딩",
+      "mainUse": "제2종근린생활시설(일반음식점)",
+      "floor": "1층",
+      "area": 82.5,
+      "approvalDate": "2015-03-12",
+      "structureType": "철근콘크리트",
+      "violationStatus": "없음"
+    }
+  },
+  "expectedOutput": {
+    "totalSteps": 7,
+    "parallelSteps": [["step-1", "step-3", "step-4"]],
+    "estimatedTime": "47초",
+    "timeReduction": "83%",
+    "documents": ["영업허가신청서", "건강진단결과서", "위생교육이수증", "임대차계약서 사본", "건축물대장", "사업자등록신청서"]
   },
   "simulatedResponses": {
     "master_intent": {
       "intent": "음식점 영업허가 및 창업 절차 안내",
       "category": "restaurant",
       "complexity": "complex",
-      "requiredAgents": ["legal", "document", "api", "scheduler", "validator"],
+      "requiredAgents": ["legal", "document", "api", "scheduler"],
       "summary": "연남동 파스타 가게 창업을 위한 영업허가, 건축물 확인, 위생교육 일정 통합 처리"
     },
-    "legal": "식품위생법 제36조(시설기준), 제37조(영업허가), 제41조(식품위생교육) 분석 완료. 영업신고 전 위생교육 이수 필수. 조리장·화장실 시설기준 충족 확인 필요.",
-    "document": "영업신고서, 건축물대장, 임대차계약서, 위생교육 이수증, 건강진단결과서(보건증)가 필요합니다. 임대차계약서는 마이데이터로 자동완성 가능합니다.",
-    "api": "건축물대장 조회 완료: 연남동 383-22, 용도-근린생활시설(제1종), 연면적 85㎡, 층수 지상1층. 음식점 영업 가능한 용도임이 확인되었습니다.",
-    "scheduler": "식품위생교육 일정: 2026-03-05(수) 09:00 서울시 식품위생교육원 마포구 센터. 소요시간 6시간. 온라인 신청 가능.",
-    "validator": "검증 완료. 신뢰도 94%. 모든 법령 인용 정확. 서류 목록 완전성 확인됨.",
-    "final": "안녕하세요! 연남동 파스타 가게 창업을 위한 절차를 정리해 드릴게요.\n\n**필요 서류** (5종)\n- 영업신고서\n- 건축물대장 (자동 조회 완료)\n- 임대차계약서 (마이데이터 자동완성 가능)\n- 위생교육 이수증\n- 건강진단결과서(보건증)\n\n**건축물 확인** ✅\n연남동 383-22는 근린생활시설로 음식점 영업이 가능합니다.\n\n**다음 단계**\n1. 식품위생교육 이수 (3/5 서울 마포센터 온라인 신청 가능)\n2. 보건증 발급 (가까운 보건소 방문)\n3. 마포구청 위생과 영업신고 접수\n\n예상 소요기간: 약 2주"
+    "legal": "식품위생법 제36조(시설기준), 제37조 제4항(영업신고), 제41조(식품위생교육), 제40조(건강진단) 분석 완료. 일반음식점은 영업신고 대상이며, 영업신고 전 위생교육(6시간) 이수 필수. 건축물 용도가 제2종 근린생활시설(일반음식점)로 확인되어 용도변경 불필요.",
+    "document": "영업신고서, 건축물대장(자동조회), 임대차계약서 사본, 위생교육 이수증, 건강진단결과서(보건증)가 필요합니다. 임대차계약서는 마이데이터로 자동완성 가능합니다. 영업신고 처리기간 3일(근무일).",
+    "api": "건축물대장 조회 완료: 연남동 383-22, 용도-제2종근린생활시설(일반음식점), 면적 82.5㎡, 1층. 음식점 영업 가능 용도 확인. 위반건축물 없음.",
+    "scheduler": "식품위생교육: 2026-03-05(수) 09:00 서울시 식품위생교육원 마포센터. 6시간. 온라인 신청 가능. 보건증 발급: 마포구 보건소 2026-03-03(월) 오전 예약 가능. 결과 3~5일 소요.",
+    "final": "안녕하세요! 연남동 파스타 가게 창업을 위한 절차를 정리해 드렸습니다.\n\n**건축물 확인 완료**\n연남동 383-22는 제2종 근린생활시설(일반음식점)로 용도변경 없이 바로 영업신고가 가능합니다.\n\n**필요 서류** (6종)\n- 영업신고서 (자동완성)\n- 건축물대장 (자동 조회 완료)\n- 임대차계약서 사본 (마이데이터 자동완성)\n- 위생교육 이수증\n- 건강진단결과서(보건증)\n- 사업자등록신청서\n\n**처리 순서**\n1. [동시진행] 건축물대장 조회 + 위생교육 신청 + 보건소 예약\n2. 위생교육 이수 (3/5 마포센터 또는 온라인)\n3. 보건증 발급 (3/3 마포구보건소)\n4. 마포구청 위생과 영업신고 접수 (처리기간 3일)\n5. 홈택스 사업자등록 신청\n6. 소상공인 지원금 신청 안내\n\n**예상 소요시간**: 47초 (AI 처리) / 실제 수속: 약 2주"
   }
 }

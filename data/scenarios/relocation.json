@@ -1,90 +1,113 @@
 {
   "id": "relocation",
+  "title": "가족 전입신고 및 파생민원 연계",
+  "persona": {
+    "name": "박이사",
+    "age": 35,
+    "situation": "수원시 영통구로 가족 이사",
+    "family": [
+      { "name": "박이사", "relation": "세대주(남편)", "age": 35 },
+      { "name": "김배우", "relation": "배우자(아내)", "age": 33 },
+      { "name": "박아이", "relation": "자녀", "age": 3 }
+    ],
+    "completedSteps": ["이사 완료", "임대차 계약 체결"]
+  },
+  "input": "수원시 영통구로 이사해요. 남편이랑 아이(3살) 포함 전입신고 해주세요.",
   "dag": {
-    "id": "dag-relocation",
-    "title": "전입신고 + 파생민원 처리 DAG",
     "nodes": [
       {
-        "id": "n1",
-        "label": "PII 마스킹",
-        "agentId": "master",
-        "status": "pending",
-        "description": "주소, 개인정보 마스킹 처리",
+        "id": "step-1",
+        "label": "전입신고 처리",
+        "agentId": "api",
+        "description": "주민등록법 제10조에 따라 세대 전원 전입신고 처리",
         "dependencies": []
       },
       {
-        "id": "n2",
-        "label": "전입신고 처리",
-        "agentId": "api",
-        "status": "pending",
-        "description": "주민등록 전입신고 API 호출",
-        "dependencies": ["n1"]
-      },
-      {
-        "id": "n3",
-        "label": "파생민원 분석",
-        "agentId": "legal",
-        "status": "pending",
-        "description": "전입신고 연계 파생민원 6종 확인",
-        "dependencies": ["n2"]
-      },
-      {
-        "id": "n4",
-        "label": "건강보험 변경",
-        "agentId": "api",
-        "status": "pending",
-        "description": "건강보험 주소 변경 API",
-        "dependencies": ["n2"]
-      },
-      {
-        "id": "n5",
-        "label": "자동차등록 변경",
-        "agentId": "api",
-        "status": "pending",
-        "description": "자동차등록증 주소 변경",
-        "dependencies": ["n2"]
-      },
-      {
-        "id": "n6",
-        "label": "서류 안내",
+        "id": "step-2",
+        "label": "주민등록증 주소변경",
         "agentId": "document",
-        "status": "pending",
-        "description": "전입신고 관련 서류 정리",
-        "dependencies": ["n3"]
+        "description": "세대원 주민등록증 주소 스티커 부착 또는 재발급 안내",
+        "dependencies": ["step-1"]
       },
       {
-        "id": "n7",
-        "label": "결과 검증",
-        "agentId": "validator",
-        "status": "pending",
-        "description": "전체 결과 교차 검증",
-        "dependencies": ["n4", "n5", "n6"]
+        "id": "step-3",
+        "label": "건강보험 자격변동",
+        "agentId": "api",
+        "description": "국민건강보험공단 주소변경 자동 통보 처리",
+        "dependencies": ["step-1"]
+      },
+      {
+        "id": "step-4",
+        "label": "국민연금 주소변경",
+        "agentId": "api",
+        "description": "국민연금공단 주소변경 자동 연계",
+        "dependencies": ["step-1"]
+      },
+      {
+        "id": "step-5",
+        "label": "자동차등록증 주소변경",
+        "agentId": "api",
+        "description": "자동차등록 주소변경 안내 (15일 이내 필수)",
+        "dependencies": ["step-1"]
+      },
+      {
+        "id": "step-6",
+        "label": "초등학교 전학신청 안내",
+        "agentId": "document",
+        "description": "수원시 영통구 초등학교 배정 및 전학신청 절차 안내",
+        "dependencies": ["step-1"]
+      },
+      {
+        "id": "step-7",
+        "label": "지역주민 혜택 안내",
+        "agentId": "api",
+        "description": "수원시 영통구 이사 가정 대상 지역 혜택 및 보육 지원 안내",
+        "dependencies": ["step-1"]
       }
     ],
     "edges": [
-      { "id": "e1", "source": "n1", "target": "n2" },
-      { "id": "e2", "source": "n2", "target": "n3" },
-      { "id": "e3", "source": "n2", "target": "n4" },
-      { "id": "e4", "source": "n2", "target": "n5" },
-      { "id": "e5", "source": "n3", "target": "n6" },
-      { "id": "e6", "source": "n4", "target": "n7" },
-      { "id": "e7", "source": "n5", "target": "n7" },
-      { "id": "e8", "source": "n6", "target": "n7" }
+      { "source": "step-1", "target": "step-2" },
+      { "source": "step-1", "target": "step-3" },
+      { "source": "step-1", "target": "step-4" },
+      { "source": "step-1", "target": "step-5" },
+      { "source": "step-1", "target": "step-6" },
+      { "source": "step-1", "target": "step-7" }
     ]
+  },
+  "mockApiResponses": {
+    "resident-transfer": {
+      "confirmationNumber": "MOI-20260301-0042",
+      "processedAt": "2026-03-01T10:23:45Z",
+      "newAddress": "경기도 수원시 영통구 매탄동 123-45",
+      "memberCount": 3,
+      "derivedServices": [
+        "주민등록증 주소변경",
+        "건강보험 주소변경",
+        "국민연금 주소변경",
+        "자동차등록증 주소변경",
+        "초등학교 전학신청",
+        "지역주민 혜택 안내"
+      ]
+    }
+  },
+  "expectedOutput": {
+    "totalSteps": 7,
+    "parallelSteps": [["step-2", "step-3", "step-4", "step-5", "step-6", "step-7"]],
+    "cascadeEffect": "1건 입력 → 7건 자동연계",
+    "estimatedTime": "38초",
+    "timeReduction": "91%"
   },
   "simulatedResponses": {
     "master_intent": {
       "intent": "전입신고 및 연계 파생민원 일괄 처리",
       "category": "relocation",
       "complexity": "multi",
-      "requiredAgents": ["legal", "document", "api", "validator"],
-      "summary": "수원시 영통구 전입신고 및 건강보험·자동차등록 등 파생민원 6종 자동 연계"
+      "requiredAgents": ["legal", "document", "api"],
+      "summary": "수원시 영통구 전입신고(3인 세대) 및 파생민원 6종 자동 연계"
     },
-    "legal": "주민등록법 제10조: 전입 14일 이내 신고 의무. 세대주 대리 신고 가능. 미성년 자녀 포함 세대원 전원 신고. 파생민원 6종(건강보험, 자동차등록, 운전면허, 국민연금, 어린이집, 아동수당) 연계 처리.",
-    "document": "전입신고서, 신분증이 필요합니다. 임차인의 경우 임대차계약서 지참 권장. 자녀의 경우 가족관계증명서가 필요할 수 있습니다.",
-    "api": "전입신고 처리 완료. 수원시 영통구 매탄동. 세대주 및 세대원 2명 등록 완료.",
-    "scheduler": "전입신고 후 파생민원 처리 일정: 건강보험공단 자동 통보(3일 내), 자동차등록소 방문 권장(1주내).",
-    "validator": "검증 완료. 신뢰도 97%. 파생민원 6종 모두 연계 확인.",
-    "final": "전입신고 처리가 완료되었습니다! 수원시 영통구로의 이사를 축하드립니다.\n\n**처리 완료** ✅\n- 전입신고: 세대주 + 남편 + 자녀(3살) 3인 완료\n\n**자동 연계 처리 중** (파생민원 6종)\n1. 건강보험 주소 변경 → 공단 자동 통보 (3일 소요)\n2. 자동차등록증 주소 변경 → 가까운 등록소 방문\n3. 운전면허증 주소 변경 → 경찰서 또는 면허시험장\n4. 국민연금 주소 변경 → 자동 처리 완료\n5. 어린이집 전환 신청 → 수원시 보육포털 접속\n6. 아동수당 주소 변경 → 자동 연계 완료\n\n**꼭 챙기세요!**\n자동차등록증 주소 변경은 전입 후 15일 이내 필수입니다."
+    "legal": "주민등록법 제10조 제1항: 전입 14일 이내 신고 의무. 세대주 대리 신고 가능. 미성년 자녀(3세) 포함 세대원 전원 신고. 자동차등록령: 전입 후 15일 이내 자동차등록 주소변경 의무.",
+    "document": "전입신고서, 신분증(세대주), 임대차계약서(확정일자 동시 신청 권장). 자녀는 가족관계증명서 불요(세대주 신고로 자동 등록).",
+    "api": "전입신고 처리 완료. 경기도 수원시 영통구 매탄동. 세대주 박이사 + 배우자 김배우 + 자녀 박아이 3인 등록 완료. 접수번호: MOI-20260301-0042",
+    "final": "전입신고 처리가 완료되었습니다! 수원시 영통구로의 이사를 축하드립니다.\n\n**전입신고 완료** (3인 세대)\n- 세대주: 박이사\n- 배우자: 김배우\n- 자녀: 박아이(3세)\n\n**자동 연계 처리** (파생민원 6종 동시 처리)\n1. 주민등록증 주소변경 → 가까운 주민센터 방문 또는 온라인 신청\n2. 건강보험 주소변경 → 공단 자동 통보 (3일 내 반영)\n3. 국민연금 주소변경 → 자동 처리 완료\n4. 자동차등록증 주소변경 → 15일 이내 필수! 수원 차량등록사업소 방문\n5. 보육 지원 → 수원시 보육포털에서 어린이집 신청 가능\n6. 지역 혜택 → 영통구 전입 가정 지역사랑상품권 10만원 지급\n\n**꼭 챙기세요!**\n자동차등록증 주소변경은 전입 후 15일 이내 미이행 시 과태료 부과됩니다."
   }
 }
