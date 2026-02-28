@@ -141,28 +141,42 @@ export class Orchestrator {
     // ── VALIDATING ────────────────────────────────────────────────────────
     this.emitter.emitWorkflowState('VALIDATING');
 
-    // ── COMPLETED ─────────────────────────────────────────────────────────
-    this.emitter.emitWorkflowState('COMPLETED');
-
     const totalTime = Date.now() - startTime;
     this.metrics.totalTime = totalTime;
     this.metrics.documentsGenerated = dag.nodes.filter((n) => n.agentId === 'document').length;
     // Traditional processing takes ~3 weeks; show time reduction estimate
     this.metrics.timeReduction = Math.round((1 - totalTime / (21 * 24 * 3600 * 1000)) * 100);
 
-    this.emitter.emitMetrics(this.metrics);
+    // Synthesize final response — emit keepalive events to prevent stream timeout
+    this.emitter.emitAgentStart('master', '최종 응답을 합성하고 있습니다...');
+    this.emitter.emitAgentThinking('master', '에이전트 결과를 종합하여 최종 안내문을 작성합니다.');
 
-    // Synthesize final response
     const resultsRecord = Object.fromEntries(
       Array.from(nodeResults.entries()).map(([k, v]) => [k, v])
     );
-    const finalResponse = await synthesizeResponse(
-      resultsRecord,
-      this.citations,
-      this.metrics,
-      this.scenarioId ?? undefined
-    );
 
+    // Start keepalive interval to prevent stream disconnect during LLM call
+    const keepalive = setInterval(() => {
+      this.emitter.emitAgentThinking('master', '응답 생성 중...');
+    }, 3000);
+
+    let finalResponse: string;
+    try {
+      finalResponse = await synthesizeResponse(
+        resultsRecord,
+        this.citations,
+        this.metrics,
+        this.scenarioId ?? undefined
+      );
+    } finally {
+      clearInterval(keepalive);
+    }
+
+    this.emitter.emitAgentResult('master', '응답 합성 완료', Date.now() - startTime);
+
+    // ── COMPLETED ─────────────────────────────────────────────────────────
+    this.emitter.emitWorkflowState('COMPLETED');
+    this.emitter.emitMetrics(this.metrics);
     this.emitter.emitMessage(finalResponse);
     this.emitter.emitComplete();
     this.emitter.close();
