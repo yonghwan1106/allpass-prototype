@@ -39,6 +39,12 @@ yarn-error.log*
 # omc
 .omc/
 
+# screenshots
+/screenshots/
+
+# internal docs
+AllPass-프로토타입-구현계획.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
