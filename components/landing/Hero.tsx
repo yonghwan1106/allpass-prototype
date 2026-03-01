@@ -90,7 +90,7 @@ export function Hero() {
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-sm text-blue-200 mb-8"
+          className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-md rounded-full px-4 py-1.5 text-sm text-blue-100 mb-8"
         >
           <Zap className="w-3.5 h-3.5 text-yellow-300" />
           <span>멀티 에이전트 AI 기반 차세대 민원 플랫폼</span>
@@ -118,7 +118,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-2xl md:text-3xl font-light text-blue-200/80 mb-4 tracking-wide"
+          className="text-2xl md:text-3xl font-light text-blue-100 mb-4 tracking-wide"
         >
           AI 기반 차세대 민원 처리 플랫폼
         </motion.p>
@@ -128,7 +128,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-base text-blue-300/70 max-w-2xl mx-auto mb-12 leading-relaxed"
+          className="text-base text-blue-200/90 max-w-2xl mx-auto mb-12 leading-relaxed"
         >
           멀티 에이전트 AI가 복합 민원을 자동으로 분석하고,<br />
           법령 검색부터 서류 작성까지 원스톱으로 처리합니다.
@@ -151,7 +151,7 @@ export function Hero() {
               className="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl px-6 py-4 text-center"
             >
               <p className="text-4xl font-black text-white leading-none mb-1">{stat.value}</p>
-              <p className="text-xs text-blue-300/70 mt-1">{stat.label}</p>
+              <p className="text-xs text-blue-200 mt-1">{stat.label}</p>
             </div>
           ))}
         </motion.div>
