@@ -39,11 +39,12 @@ export async function submitResidentRegistration(params: {
   derivedServices: string[];
 }> {
   await randomDelay(600, 1200);
+  const members = params.members ?? [];
   return {
     confirmationNumber: `MOI-${Date.now().toString().slice(-8)}`,
     processedAt: new Date().toISOString(),
-    newAddress: params.newAddress,
-    memberCount: params.members.length + 1,
+    newAddress: params.newAddress ?? '주소 미입력',
+    memberCount: members.length + 1,
     derivedServices: [
       '건강보험 주소변경',
       '자동차등록증 변경',
