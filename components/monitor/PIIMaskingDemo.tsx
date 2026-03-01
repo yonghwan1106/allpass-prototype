@@ -84,7 +84,7 @@ export function PIIMaskingDemo() {
                     <p className="text-slate-300 leading-relaxed break-words">
                       <HighlightText
                         text={event.original}
-                        highlights={[]}
+                        highlights={event.detectedSpans ?? []}
                         color="#ef4444"
                       />
                     </p>

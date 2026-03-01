@@ -72,6 +72,7 @@ export class DAGExecutor {
       const errorMsg = err instanceof Error ? err.message : String(err);
       this.results.set(node.id, errorMsg);
       this.setNodeStatus(node.id, 'error', errorMsg, duration);
+      this.emitter.emitAgentError(node.agentId, errorMsg);
     }
   }
 
@@ -82,6 +83,9 @@ export class DAGExecutor {
     switch (agentId) {
       case 'legal': {
         const res = await runLegalAgent(node.description, context);
+        for (const c of res.citations) {
+          this.emitter.emitLegalCitation(c);
+        }
         return res.analysis;
       }
       case 'document': {
@@ -90,7 +94,15 @@ export class DAGExecutor {
       }
       case 'api': {
         const apiType = this.inferApiType(node);
+        const start = Date.now();
         const res = await runAPIAgent(node.description, apiType, context);
+        this.emitter.emitAPICall({
+          endpoint: apiType,
+          method: 'POST',
+          status: 200,
+          responseTime: Date.now() - start,
+          result: res.response as Record<string, unknown>,
+        });
         return JSON.stringify(res.response);
       }
       case 'scheduler': {
@@ -106,7 +118,7 @@ export class DAGExecutor {
       case 'planner':
       default: {
         // Master/Planner nodes in DAG act as coordinators — return summary
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 100));
         return node.description + ' 완료';
       }
     }

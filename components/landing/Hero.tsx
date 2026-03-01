@@ -101,7 +101,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-8xl md:text-9xl font-black tracking-tight mb-4"
+          className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight mb-4"
         >
           <span
             className="gov-gradient-text"

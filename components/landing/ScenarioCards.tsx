@@ -26,7 +26,7 @@ export function ScenarioCards() {
           <p className="text-lg text-gray-500">실제 민원 사례로 All-Pass를 직접 경험해보세요</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {scenarios.map((scenario, i) => (
             <motion.div
               key={scenario.id}

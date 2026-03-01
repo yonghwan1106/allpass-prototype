@@ -3,7 +3,7 @@ import type { LegalCitation } from '@/lib/agents/types';
 const IS_SIMULATION = !process.env.ANTHROPIC_API_KEY;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const randomDelay = () => delay(600 + Math.random() * 900);
+const randomDelay = () => delay(400 + Math.random() * 500);
 
 export async function runValidatorAgent(
   results: Record<string, unknown>,
@@ -17,18 +17,22 @@ export async function runValidatorAgent(
   if (IS_SIMULATION) {
     await randomDelay();
 
-    // Basic hallucination check: ensure we have some results
     const hasResults = Object.keys(results).length > 0;
-    const hasCitations = citations.length >= 0; // citations optional
-    void hasCitations;
+    const hasCitations = citations.length > 0;
 
-    const confidence = hasResults ? 0.92 + Math.random() * 0.06 : 0.6;
+    let confidence = hasResults ? 0.92 + Math.random() * 0.06 : 0.6;
     const issues: string[] = [];
     const suggestions: string[] = [];
 
     if (!hasResults) {
       issues.push('에이전트 결과가 부족합니다.');
       suggestions.push('다시 시도하거나 담당자에게 문의하세요.');
+    }
+
+    if (!hasCitations) {
+      issues.push('법령 인용이 포함되지 않았습니다. 신뢰도가 낮을 수 있습니다.');
+      suggestions.push('법령 에이전트 결과를 재확인하세요.');
+      confidence = 0.78 + Math.random() * 0.08;
     }
 
     return {

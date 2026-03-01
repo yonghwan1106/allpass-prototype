@@ -187,6 +187,7 @@ export interface PIIMaskingEvent extends SSEEvent {
     original: string;
     masked: string;
     detectedTypes: string[];
+    detectedSpans: string[];
   };
 }
 

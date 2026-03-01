@@ -60,7 +60,7 @@ export function Features() {
           <p className="text-lg text-gray-500">All-Pass가 민원 처리를 혁신하는 방법</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map((feature, i) => {
             const Icon = feature.icon;
             return (

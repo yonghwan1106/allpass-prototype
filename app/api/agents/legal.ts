@@ -3,7 +3,7 @@ import type { LegalCitation } from '@/lib/agents/types';
 const IS_SIMULATION = !process.env.ANTHROPIC_API_KEY;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const randomDelay = () => delay(500 + Math.random() * 1000);
+const randomDelay = () => delay(400 + Math.random() * 600);
 
 interface LegalChunk {
   id: string;

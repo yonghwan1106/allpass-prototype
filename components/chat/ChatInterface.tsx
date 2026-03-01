@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useChatStore } from '@/lib/store/chat-store';
 import { useAgentStore } from '@/lib/store/agent-store';
@@ -36,6 +36,8 @@ export function ChatInterface() {
     addAPICall,
     reset: resetAgent,
   } = useAgentStore();
+
+  const [errorDemo, setErrorDemo] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -105,6 +107,7 @@ export function ChatInterface() {
           original: d.original as string,
           masked: d.masked as string,
           detectedTypes: d.detectedTypes as string[],
+          detectedSpans: (d.detectedSpans as string[]) ?? [],
         });
         break;
 
@@ -159,7 +162,7 @@ export function ChatInterface() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text.trim(), scenarioId: currentScenario }),
+        body: JSON.stringify({ message: text.trim(), scenarioId: currentScenario, errorDemo }),
       });
 
       if (!response.ok || !response.body) {
@@ -196,7 +199,7 @@ export function ChatInterface() {
       updateLastAssistantMessage('오류가 발생했습니다. 다시 시도해 주세요.');
       setStreaming(false);
     }
-  }, [isStreaming, currentScenario, addMessage, setInputValue, setStreaming, handleSSEEvent, updateLastAssistantMessage]);
+  }, [isStreaming, currentScenario, errorDemo, addMessage, setInputValue, setStreaming, handleSSEEvent, updateLastAssistantMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -256,6 +259,17 @@ export function ChatInterface() {
             {scenario.icon} {scenario.title}
           </button>
         ))}
+        <button
+          onClick={() => setErrorDemo(!errorDemo)}
+          className={`shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border transition-all duration-150 ${
+            errorDemo
+              ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+              : 'bg-ap-card text-slate-500 border-ap-border hover:border-slate-500'
+          }`}
+          title="에러 복구 데모 모드"
+        >
+          ⚡ 에러 복구
+        </button>
         <button
           onClick={handleReset}
           className="ml-auto shrink-0 p-1.5 rounded-full hover:bg-white/5 text-slate-500 transition-colors"

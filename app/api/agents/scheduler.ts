@@ -1,7 +1,7 @@
 const IS_SIMULATION = !process.env.ANTHROPIC_API_KEY;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const randomDelay = () => delay(400 + Math.random() * 800);
+const randomDelay = () => delay(300 + Math.random() * 400);
 
 export async function runSchedulerAgent(
   tasks: string[],

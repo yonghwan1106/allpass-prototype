@@ -36,8 +36,8 @@ export class AgentEventEmitter {
     try {
       const data = `data: ${JSON.stringify(event)}\n\n`;
       this.controller.enqueue(this.encoder.encode(data));
-    } catch {
-      // controller may have been closed
+    } catch (e) {
+      console.debug('[AgentEventEmitter] emit failed:', e);
     }
   }
 
@@ -55,6 +55,10 @@ export class AgentEventEmitter {
 
   emitAgentResult(agentId: AgentId, result: string, duration: number): void {
     this.emit(this.makeEvent('agent_result', { agentId, result, duration }));
+  }
+
+  emitAgentError(agentId: AgentId, error: string): void {
+    this.emit(this.makeEvent('agent_error', { agentId, error }));
   }
 
   emitDAGUpdate(dag: DAGPlan): void {
@@ -102,8 +106,8 @@ export class AgentEventEmitter {
     if (!this.controller) return;
     try {
       this.controller.close();
-    } catch {
-      // already closed
+    } catch (e) {
+      console.debug('[AgentEventEmitter] close failed:', e);
     }
     this.controller = null;
   }

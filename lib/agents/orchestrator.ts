@@ -3,39 +3,47 @@ import type { AgentEventEmitter } from '@/lib/agents/event-emitter';
 import { DAGExecutor } from '@/lib/agents/dag-executor';
 import { runMasterAgent, synthesizeResponse } from '@/app/api/agents/master';
 import { runPlannerAgent } from '@/app/api/agents/planner';
-import { runLegalAgent } from '@/app/api/agents/legal';
 
 const MAX_RETRIES = 3;
 
-function maskPII(text: string): { masked: string; detectedTypes: string[] } {
+function maskPII(text: string): { masked: string; detectedTypes: string[]; detectedSpans: string[] } {
   const detectedTypes: string[] = [];
+  const detectedSpans: string[] = [];
   let masked = text;
 
   // Korean resident registration number: 000000-0000000
   if (/\d{6}-\d{7}/.test(masked)) {
+    const matches = masked.match(/\d{6}-\d{7}/g);
+    if (matches) detectedSpans.push(...matches);
     masked = masked.replace(/\d{6}-\d{7}/g, '******-*******');
     detectedTypes.push('주민등록번호');
   }
 
   // Phone numbers
   if (/01[016789]-?\d{3,4}-?\d{4}/.test(masked)) {
+    const matches = masked.match(/01[016789]-?\d{3,4}-?\d{4}/g);
+    if (matches) detectedSpans.push(...matches);
     masked = masked.replace(/01[016789]-?\d{3,4}-?\d{4}/g, '010-****-****');
     detectedTypes.push('전화번호');
   }
 
   // Korean address — mask building number
   if (/\d+번지|\d+-\d+/.test(masked)) {
+    const matches = masked.match(/\d+번지|\d+-\d+/g);
+    if (matches) detectedSpans.push(...matches);
     masked = masked.replace(/(\d+번지|\d+-\d+)/g, (m) => m.replace(/\d/g, '*'));
     detectedTypes.push('상세주소');
   }
 
-  return { masked, detectedTypes };
+  return { masked, detectedTypes, detectedSpans };
 }
 
 export class Orchestrator {
   private emitter: AgentEventEmitter;
   private scenarioId: ScenarioId | null;
   private citations: LegalCitation[] = [];
+  private errorDemo: boolean;
+  private errorDemoTriggered = false;
   private metrics: MetricsUpdateEvent['data'] = {
     totalTime: 0,
     agentCalls: 0,
@@ -45,9 +53,10 @@ export class Orchestrator {
     timeReduction: 0,
   };
 
-  constructor(emitter: AgentEventEmitter) {
+  constructor(emitter: AgentEventEmitter, options?: { errorDemo?: boolean }) {
     this.emitter = emitter;
     this.scenarioId = null;
+    this.errorDemo = options?.errorDemo ?? false;
   }
 
   async processMessage(userMessage: string, scenarioId?: ScenarioId): Promise<void> {
@@ -83,12 +92,13 @@ export class Orchestrator {
     this.emitter.emitWorkflowState('INIT');
     this.emitter.emitAgentStart('master', 'PII 마스킹 및 입력 전처리');
 
-    const { masked, detectedTypes } = maskPII(userMessage);
+    const { masked, detectedTypes, detectedSpans } = maskPII(userMessage);
     if (detectedTypes.length > 0) {
       this.emitter.emitPIIMasking({
         original: userMessage,
         masked,
         detectedTypes,
+        detectedSpans,
       });
     }
     this.emitter.emitAgentResult('master', 'PII 마스킹 완료', Date.now() - startTime);
@@ -120,26 +130,35 @@ export class Orchestrator {
     this.metrics.agentCalls += dag.nodes.length;
     this.metrics.apiCalls += dag.nodes.filter((n) => n.agentId === 'api').length;
 
-    // Collect legal citations from legal agent results
-    for (const [, result] of nodeResults.entries()) {
-      if (result && result.length > 0) {
-        // Run legal agent to collect citations if needed
-        try {
-          const legalRes = await runLegalAgent(intentResult.intent);
-          for (const c of legalRes.citations) {
-            this.citations.push(c);
-            this.emitter.emitLegalCitation(c);
-          }
-          this.metrics.legalCitations += legalRes.citations.length;
-        } catch {
-          // non-fatal
-        }
-        break; // only once
-      }
-    }
-
     // ── VALIDATING ────────────────────────────────────────────────────────
     this.emitter.emitWorkflowState('VALIDATING');
+
+    // Error recovery demo: simulate validation failure on first attempt
+    if (this.errorDemo && !this.errorDemoTriggered) {
+      this.errorDemoTriggered = true;
+      this.emitter.emitAgentStart('validator', '결과 검증 중...');
+      await new Promise((r) => setTimeout(r, 800));
+      this.emitter.emitAgentError('validator', '법령 인용 검증 실패: 인용 근거 부족');
+      this.emitter.emitWorkflowState('RETRY');
+      this.emitter.emitMessage('검증 실패 감지 — 법령 에이전트를 재실행하여 인용을 보강합니다.');
+
+      // Re-run legal agent for additional citations
+      this.emitter.emitAgentStart('legal', '법령 재검색 중 (인용 보강)...');
+      const { runLegalAgent } = await import('@/app/api/agents/legal');
+      const legalRes = await runLegalAgent(userMessage);
+      for (const c of legalRes.citations) {
+        this.citations.push(c);
+        this.emitter.emitLegalCitation(c);
+      }
+      this.metrics.legalCitations += legalRes.citations.length;
+      this.emitter.emitAgentResult('legal', `${legalRes.citations.length}건 추가 인용 확보`, Date.now() - startTime);
+
+      // Re-validate
+      this.emitter.emitWorkflowState('VALIDATING');
+      this.emitter.emitAgentStart('validator', '재검증 수행 중...');
+      await new Promise((r) => setTimeout(r, 600));
+      this.emitter.emitAgentResult('validator', '재검증 통과. 신뢰도 94%', Date.now() - startTime);
+    }
 
     const totalTime = Date.now() - startTime;
     this.metrics.totalTime = totalTime;

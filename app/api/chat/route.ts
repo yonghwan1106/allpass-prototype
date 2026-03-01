@@ -6,8 +6,8 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
-  const body = await request.json() as { message?: string; scenarioId?: ScenarioId };
-  const { message, scenarioId } = body;
+  const body = await request.json() as { message?: string; scenarioId?: ScenarioId; errorDemo?: boolean };
+  const { message, scenarioId, errorDemo } = body;
 
   if (!message || typeof message !== 'string' || message.trim().length === 0) {
     return new Response(JSON.stringify({ error: '메시지가 필요합니다.' }), {
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   }
 
   const emitter = new AgentEventEmitter();
-  const orchestrator = new Orchestrator(emitter);
+  const orchestrator = new Orchestrator(emitter, { errorDemo });
 
   // Start orchestration asynchronously — do not await
   orchestrator.processMessage(message.trim(), scenarioId).catch(console.error);

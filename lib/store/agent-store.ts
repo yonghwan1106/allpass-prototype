@@ -40,7 +40,7 @@ interface AgentStore {
   eventLog: SSEEvent[];
 
   // PII masking events
-  piiEvents: Array<{ original: string; masked: string; detectedTypes: string[] }>;
+  piiEvents: Array<{ original: string; masked: string; detectedTypes: string[]; detectedSpans: string[] }>;
 
   // API call events
   apiCalls: Array<{ endpoint: string; method: string; status: number; responseTime: number }>;
@@ -53,7 +53,7 @@ interface AgentStore {
   addCitation: (citation: LegalCitation) => void;
   setMetrics: (metrics: MetricsUpdateEvent['data']) => void;
   addEvent: (event: SSEEvent) => void;
-  addPIIEvent: (event: { original: string; masked: string; detectedTypes: string[] }) => void;
+  addPIIEvent: (event: { original: string; masked: string; detectedTypes: string[]; detectedSpans: string[] }) => void;
   addAPICall: (call: { endpoint: string; method: string; status: number; responseTime: number }) => void;
   reset: () => void;
 }
