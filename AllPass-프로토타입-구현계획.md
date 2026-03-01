@@ -328,8 +328,12 @@ allpass-prototype/
 - [x] 버그 수정 및 엣지 케이스 처리 (ValidatorAgent 인용 검증, agent_error 발행, 중복 Legal 호출 제거, PII 하이라이트, emitter 디버그 로깅)
 - [x] 에러 복구 시연 구현 (errorDemo 토글 → RETRY → Legal 재실행 → 재검증 → COMPLETED)
 - [x] `npm run build` 통합 빌드 검증 통과 (0 에러, 21개 파일 수정)
-- [ ] 3개 시나리오 수동 실행 검증 (`npm run dev`로 각 시나리오 E2E 확인)
-- [ ] Vercel 재배포 (최신 변경사항 반영)
+- [x] 3개 시나리오 수동 실행 검증 (로컬 + 프로덕션 E2E 확인 완료)
+  - Restaurant: DAG 7노드, 법령 인용 3건, API 호출 3건 ✅
+  - Relocation: DAG 7노드 (1→7 cascade), API 호출 5건 ✅ (members undefined 버그 수정)
+  - Welfare: DAG 5노드, 법령 인용 6건, API 호출 2건 ✅
+  - Error Recovery: VALIDATING → agent_error → RETRY → 법령 재검색 → 재검증 ✅
+- [x] Vercel 재배포 완료 (2건 커밋, Production ● Ready)
 - [ ] 데모 영상 녹화 (선택)
 - [x] GitHub 리포지토리 — https://github.com/yonghwan1106/allpass-prototype
 
