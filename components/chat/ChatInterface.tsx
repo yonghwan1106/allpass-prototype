@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { useChatStore } from '@/lib/store/chat-store';
 import { useAgentStore } from '@/lib/store/agent-store';
 import { SCENARIOS, ScenarioId, SSEEvent, AgentId } from '@/lib/agents/types';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageBubble } from './MessageBubble';
 import { TypingIndicator } from './TypingIndicator';
 import { Send, RotateCcw } from 'lucide-react';
@@ -40,20 +39,19 @@ export function ChatInterface() {
   const [errorDemo, setErrorDemo] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const userScrolledUp = useRef(false);
 
   // Track if user manually scrolled up
   useEffect(() => {
-    const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-    if (!viewport) return;
+    const el = scrollContainerRef.current;
+    if (!el) return;
     const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = viewport;
-      userScrolledUp.current = scrollHeight - scrollTop - clientHeight > 80;
+      userScrolledUp.current = el.scrollHeight - el.scrollTop - el.clientHeight > 80;
     };
-    viewport.addEventListener('scroll', handleScroll);
-    return () => viewport.removeEventListener('scroll', handleScroll);
+    el.addEventListener('scroll', handleScroll);
+    return () => el.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Auto-scroll only when user hasn't scrolled up
@@ -297,7 +295,7 @@ export function ChatInterface() {
       </div>
 
       {/* Message list */}
-      <ScrollArea className="flex-1" ref={scrollAreaRef}>
+      <div className="flex-1 overflow-y-auto custom-scrollbar" ref={scrollContainerRef}>
         <div className="py-3">
           {messages.length === 0 && (
             <motion.div
@@ -318,7 +316,7 @@ export function ChatInterface() {
           {isStreaming && <TypingIndicator />}
           <div ref={bottomRef} />
         </div>
-      </ScrollArea>
+      </div>
 
       {/* Input area */}
       <div className="shrink-0 border-t border-ap-border bg-ap-panel p-3">
