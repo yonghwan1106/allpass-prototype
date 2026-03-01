@@ -40,10 +40,27 @@ export function ChatInterface() {
   const [errorDemo, setErrorDemo] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const userScrolledUp = useRef(false);
 
+  // Track if user manually scrolled up
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+    if (!viewport) return;
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = viewport;
+      userScrolledUp.current = scrollHeight - scrollTop - clientHeight > 80;
+    };
+    viewport.addEventListener('scroll', handleScroll);
+    return () => viewport.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Auto-scroll only when user hasn't scrolled up
+  useEffect(() => {
+    if (!userScrolledUp.current) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages, isStreaming]);
 
   const handleSSEEvent = useCallback((event: SSEEvent) => {
@@ -280,7 +297,7 @@ export function ChatInterface() {
       </div>
 
       {/* Message list */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1" ref={scrollAreaRef}>
         <div className="py-3">
           {messages.length === 0 && (
             <motion.div

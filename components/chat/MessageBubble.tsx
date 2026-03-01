@@ -11,29 +11,99 @@ interface MessageBubbleProps {
   message: ChatMessage;
 }
 
+function renderInline(text: string) {
+  // Bold: **text**
+  const parts = text.split(/\*\*(.*?)\*\*/g);
+  return parts.map((part, j) =>
+    j % 2 === 1 ? <strong key={j}>{part}</strong> : part
+  );
+}
+
 function renderContent(content: string) {
   const lines = content.split('\n');
-  return lines.map((line, i) => {
-    // Bold: **text**
-    const parts = line.split(/\*\*(.*?)\*\*/g);
-    const rendered = parts.map((part, j) =>
-      j % 2 === 1 ? <strong key={j}>{part}</strong> : part
-    );
-    // List items
-    if (line.startsWith('- ') || line.startsWith('• ')) {
-      return (
-        <li key={i} className="ml-4 list-disc">
-          {rendered.slice(1)}
-        </li>
-      );
+  const elements: React.ReactNode[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // Skip empty lines but add spacing
+    if (!trimmed) {
+      elements.push(<div key={i} className="h-2" />);
+      continue;
     }
-    return (
-      <span key={i}>
-        {rendered}
-        {i < lines.length - 1 && <br />}
-      </span>
+
+    // Horizontal rule: ---
+    if (/^-{3,}$/.test(trimmed)) {
+      elements.push(<hr key={i} className="border-white/10 my-3" />);
+      continue;
+    }
+
+    // Heading: ## or ###
+    if (trimmed.startsWith('## ')) {
+      const text = trimmed.replace(/^##\s+/, '');
+      elements.push(
+        <h3 key={i} className="text-base font-bold text-white mt-4 mb-2">
+          {renderInline(text)}
+        </h3>
+      );
+      continue;
+    }
+    if (trimmed.startsWith('### ')) {
+      const text = trimmed.replace(/^###\s+/, '');
+      elements.push(
+        <h4 key={i} className="text-sm font-bold text-blue-300 mt-3 mb-1.5">
+          {renderInline(text)}
+        </h4>
+      );
+      continue;
+    }
+
+    // Blockquote: >
+    if (trimmed.startsWith('> ')) {
+      const text = trimmed.replace(/^>\s*/, '');
+      elements.push(
+        <div key={i} className="border-l-2 border-blue-500/40 pl-3 py-0.5 text-slate-400 text-xs leading-relaxed">
+          {renderInline(text)}
+        </div>
+      );
+      continue;
+    }
+
+    // Numbered list: 1. 2. etc.
+    if (/^\d+\.\s/.test(trimmed)) {
+      const text = trimmed.replace(/^\d+\.\s+/, '');
+      const num = trimmed.match(/^(\d+)\./)?.[1];
+      elements.push(
+        <div key={i} className="flex gap-2 ml-1 py-0.5">
+          <span className="text-blue-400/70 text-xs font-bold shrink-0 mt-0.5">{num}.</span>
+          <span>{renderInline(text)}</span>
+        </div>
+      );
+      continue;
+    }
+
+    // Unordered list: - or •
+    if (trimmed.startsWith('- ') || trimmed.startsWith('• ')) {
+      const text = trimmed.replace(/^[-•]\s+/, '');
+      elements.push(
+        <div key={i} className="flex gap-2 ml-1 py-0.5">
+          <span className="text-blue-400/60 shrink-0 mt-0.5">•</span>
+          <span>{renderInline(text)}</span>
+        </div>
+      );
+      continue;
+    }
+
+    // Regular text
+    elements.push(
+      <p key={i} className="py-0.5">
+        {renderInline(trimmed)}
+      </p>
     );
-  });
+  }
+
+  return elements;
 }
 
 function CitationCard({ citation }: { citation: LegalCitation }) {
