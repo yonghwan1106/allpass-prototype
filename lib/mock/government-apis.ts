@@ -1,7 +1,7 @@
 // Mock Government API responses simulating real government data portals
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-const randomDelay = (min = 200, max = 800) => delay(Math.floor(Math.random() * (max - min) + min));
+const randomDelay = (min = 100, max = 400) => delay(Math.floor(Math.random() * (max - min) + min));
 
 // ===== Building Registry API (건축물대장 조회) =====
 export async function getBuildingRegistry(address: string): Promise<{

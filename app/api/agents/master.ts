@@ -3,7 +3,7 @@ import type { AgentId, LegalCitation, MetricsUpdateEvent, ScenarioId } from '@/l
 const IS_SIMULATION = !process.env.ANTHROPIC_API_KEY;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const randomDelay = () => delay(400 + Math.random() * 600);
+const randomDelay = () => delay(200 + Math.random() * 400);
 
 export async function runMasterAgent(
   input: string,

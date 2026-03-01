@@ -3,7 +3,7 @@ import type { DAGPlan, ScenarioId } from '@/lib/agents/types';
 const IS_SIMULATION = !process.env.ANTHROPIC_API_KEY;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const randomDelay = () => delay(300 + Math.random() * 500);
+const randomDelay = () => delay(150 + Math.random() * 300);
 
 export async function runPlannerAgent(
   intent: string,

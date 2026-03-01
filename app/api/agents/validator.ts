@@ -3,7 +3,7 @@ import type { LegalCitation } from '@/lib/agents/types';
 const IS_SIMULATION = !process.env.ANTHROPIC_API_KEY;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const randomDelay = () => delay(400 + Math.random() * 500);
+const randomDelay = () => delay(200 + Math.random() * 300);
 
 export async function runValidatorAgent(
   results: Record<string, unknown>,
