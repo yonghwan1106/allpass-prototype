@@ -43,57 +43,59 @@ function DemoContent() {
       {/* State machine bar */}
       <StateMachine />
 
-      {/* Main layout */}
+      {/* Main layout: Left (DAG + Tabs) | Right (Chat) */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
 
-        {/* Left column: DAG (full height on desktop, 40% on mobile) */}
-        <div className="flex flex-col h-[40vh] lg:h-auto lg:w-[58%] lg:flex-1 border-b lg:border-b-0 lg:border-r border-ap-border overflow-hidden">
-          {/* DAG header */}
-          <div className="shrink-0 flex items-center gap-2 px-3 py-2 cmd-panel-header">
-            <span className="text-xs font-semibold text-slate-400">DAG 워크플로우</span>
+        {/* Left column: DAG (top) + Tabs (bottom) */}
+        <div className="flex flex-col h-[50vh] lg:h-auto lg:w-[50%] border-b lg:border-b-0 lg:border-r border-ap-border overflow-hidden">
+          {/* DAG area */}
+          <div className="flex flex-col flex-1 min-h-0 border-b border-ap-border">
+            <div className="shrink-0 flex items-center gap-2 px-3 py-2 cmd-panel-header">
+              <span className="text-xs font-semibold text-slate-400">DAG 워크플로우</span>
+            </div>
+            <div className="flex-1 min-h-0">
+              <DAGViewer />
+            </div>
           </div>
-          <div className="flex-1 min-h-0">
-            <DAGViewer />
+
+          {/* Tabs area (활동 로그 / 법령 인용 / 메트릭) */}
+          <div className="flex flex-col h-[30vh] lg:h-[40%] shrink-0 overflow-hidden">
+            <Tabs defaultValue="log" className="flex flex-col h-full">
+              <TabsList className="shrink-0 rounded-none border-b border-ap-border bg-transparent justify-start px-2 h-9 gap-1">
+                <TabsTrigger value="log" className="text-xs gap-1.5 data-[state=active]:bg-white/5 data-[state=active]:text-blue-400 text-slate-500 hover:text-slate-300 rounded-md">
+                  <Activity className="w-3 h-3" /> 활동 로그
+                </TabsTrigger>
+                <TabsTrigger value="legal" className="text-xs gap-1.5 data-[state=active]:bg-white/5 data-[state=active]:text-blue-400 text-slate-500 hover:text-slate-300 rounded-md">
+                  <Scale className="w-3 h-3" /> 법령 인용
+                </TabsTrigger>
+                <TabsTrigger value="metrics" className="text-xs gap-1.5 data-[state=active]:bg-white/5 data-[state=active]:text-blue-400 text-slate-500 hover:text-slate-300 rounded-md">
+                  <BarChart2 className="w-3 h-3" /> 메트릭
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="log" className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden">
+                <div className="h-full overflow-hidden">
+                  <AgentLog />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="legal" className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden">
+                <div className="h-full overflow-hidden">
+                  <LegalSearchPanel />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="metrics" className="flex-1 overflow-auto mt-0 data-[state=inactive]:hidden">
+                <MetricsPanel />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
 
-        {/* Right column: Tabs */}
-        <div className="flex flex-col h-[30vh] lg:h-auto lg:w-[42%] lg:flex-1 overflow-hidden">
-          <Tabs defaultValue="log" className="flex flex-col h-full">
-            <TabsList className="shrink-0 rounded-none border-b border-ap-border bg-transparent justify-start px-2 h-9 gap-1">
-              <TabsTrigger value="log" className="text-xs gap-1.5 data-[state=active]:bg-white/5 data-[state=active]:text-blue-400 text-slate-500 hover:text-slate-300 rounded-md">
-                <Activity className="w-3 h-3" /> 활동 로그
-              </TabsTrigger>
-              <TabsTrigger value="legal" className="text-xs gap-1.5 data-[state=active]:bg-white/5 data-[state=active]:text-blue-400 text-slate-500 hover:text-slate-300 rounded-md">
-                <Scale className="w-3 h-3" /> 법령 인용
-              </TabsTrigger>
-              <TabsTrigger value="metrics" className="text-xs gap-1.5 data-[state=active]:bg-white/5 data-[state=active]:text-blue-400 text-slate-500 hover:text-slate-300 rounded-md">
-                <BarChart2 className="w-3 h-3" /> 메트릭
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="log" className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden">
-              <div className="h-full overflow-hidden">
-                <AgentLog />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="legal" className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden">
-              <div className="h-full overflow-hidden">
-                <LegalSearchPanel />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="metrics" className="flex-1 overflow-auto mt-0 data-[state=inactive]:hidden">
-              <MetricsPanel />
-            </TabsContent>
-          </Tabs>
+        {/* Right column: Chat (full height) */}
+        <div className="flex flex-col h-[50vh] lg:h-auto lg:w-[50%] overflow-hidden">
+          <ChatInterface />
         </div>
-      </div>
-
-      {/* Bottom: Chat — fixed height */}
-      <div className="shrink-0 h-[30vh] lg:h-[35%] min-h-[200px] border-t border-ap-border bg-ap-panel">
-        <ChatInterface />
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   NodeTypes,
   EdgeTypes,
   Node,
@@ -151,17 +150,6 @@ export function DAGViewer() {
       >
         <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="#1e293b" />
         <Controls showInteractive={false} />
-        <div className="hidden lg:block">
-          <MiniMap
-            nodeColor={(n) => {
-              const d = n.data as AgentNodeData;
-              const config = AGENT_CONFIGS[d.agentId];
-              return config?.color ?? '#6366f1';
-            }}
-            maskColor="rgba(5,10,24,0.8)"
-            className="!border !border-ap-border !rounded-lg !bg-ap-panel"
-          />
-        </div>
       </ReactFlow>
     </div>
   );

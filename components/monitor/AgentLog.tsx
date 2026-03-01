@@ -106,7 +106,7 @@ export function AgentLog() {
                     transition={{ duration: 0.2 }}
                     className="terminal-log-entry flex items-start gap-2 py-0.5"
                   >
-                    <span className="shrink-0 text-slate-600 text-[10px] pt-0.5 w-16">{time}</span>
+                    <span className="shrink-0 text-slate-600 text-[10px] pt-0.5 whitespace-nowrap">{time}</span>
                     {config && (
                       <span
                         className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded"
