@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAgentStore } from '@/lib/store/agent-store';
 import { AGENT_CONFIGS, AgentId, SSEEvent } from '@/lib/agents/types';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -80,7 +79,7 @@ export function AgentLog() {
         )}
       </div>
 
-      <ScrollArea className="flex-1 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
         <div className="p-3 space-y-1.5 terminal-log">
           {eventLog.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-24 text-slate-600">
@@ -129,7 +128,7 @@ export function AgentLog() {
           )}
           <div ref={bottomRef} />
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }

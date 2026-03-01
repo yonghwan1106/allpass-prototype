@@ -2,7 +2,6 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAgentStore } from '@/lib/store/agent-store';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { LegalCitation } from './LegalCitation';
 import { Scale } from 'lucide-react';
 
@@ -21,7 +20,7 @@ export function LegalSearchPanel() {
         )}
       </div>
 
-      <ScrollArea className="flex-1 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
         <div className="p-3 space-y-2">
           {citations.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-32 text-slate-600">
@@ -43,7 +42,7 @@ export function LegalSearchPanel() {
             </AnimatePresence>
           )}
         </div>
-      </ScrollArea>
+      </div>
     </div>
   );
 }
