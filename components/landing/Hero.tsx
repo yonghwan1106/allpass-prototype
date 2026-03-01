@@ -25,7 +25,7 @@ const STATS = [
 
 export function Hero() {
   return (
-    <section className="hero-gradient hero-gradient-accent relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="hero-gradient relative min-h-screen flex items-center justify-center overflow-hidden">
 
       {/* Animated grid */}
       <div
@@ -267,7 +267,7 @@ export function Hero() {
       <div
         className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
         style={{
-          background: 'linear-gradient(to bottom, transparent 0%, rgba(5,10,24,0.4) 50%, rgba(248,250,252,0.0) 100%)',
+          background: 'linear-gradient(to bottom, transparent 0%, #050a18 100%)',
         }}
       />
     </section>
