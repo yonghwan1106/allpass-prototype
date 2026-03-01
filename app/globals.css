@@ -235,6 +235,49 @@
   50% { opacity: 0.08; }
 }
 
+@keyframes float-dot {
+  0%, 100% { transform: translateY(0px) scale(1); opacity: var(--dot-opacity, 0.3); }
+  33% { transform: translateY(-14px) scale(1.15); opacity: calc(var(--dot-opacity, 0.3) * 1.6); }
+  66% { transform: translateY(-7px) scale(0.95); opacity: calc(var(--dot-opacity, 0.3) * 1.2); }
+}
+
+@keyframes chevron-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
+@keyframes badge-border-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes stat-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0),
+                0 0 20px rgba(59, 130, 246, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15),
+                0 0 24px rgba(59, 130, 246, 0.12);
+  }
+}
+
+@keyframes feature-card-glow {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@keyframes cta-shimmer {
+  0% { transform: translateX(-100%) skewX(-12deg); }
+  100% { transform: translateX(300%) skewX(-12deg); }
+}
+
+@keyframes text-glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 30px rgba(59,130,246,0.3)); }
+  50% { filter: drop-shadow(0 0 55px rgba(99,102,241,0.5)) drop-shadow(0 0 80px rgba(59,130,246,0.2)); }
+}
+
 /* ── Utility classes ─────────────────────────── */
 
 .animate-pulse-blue { animation: pulse-blue 2s ease-in-out infinite; }
@@ -252,7 +295,9 @@
 .animate-float-up { animation: float-up 0.6s ease-out forwards; }
 .animate-slide-in { animation: slide-in-right 0.3s ease-out forwards; }
 .animate-border-glow { animation: border-glow 2s ease-in-out infinite; }
-
+.animate-chevron-bounce { animation: chevron-bounce 1.8s ease-in-out infinite; }
+.animate-stat-glow { animation: stat-glow-pulse 3s ease-in-out infinite; }
+.animate-text-glow { animation: text-glow-pulse 4s ease-in-out infinite; }
 .typing-dot:nth-child(1) { animation: typing-dot 1.4s ease-in-out infinite 0s; }
 .typing-dot:nth-child(2) { animation: typing-dot 1.4s ease-in-out infinite 0.2s; }
 .typing-dot:nth-child(3) { animation: typing-dot 1.4s ease-in-out infinite 0.4s; }
@@ -469,6 +514,7 @@
   overflow: hidden;
 }
 
+/* Top accent bar */
 .landing-feature-card::before {
   content: '';
   position: absolute;
@@ -482,11 +528,71 @@
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Glow halo on hover */
+.landing-feature-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  box-shadow: inset 0 0 0 1px var(--card-accent, #3b82f6),
+              0 0 0 1px var(--card-accent, #3b82f6),
+              0 8px 32px color-mix(in srgb, var(--card-accent, #3b82f6) 20%, transparent);
+  pointer-events: none;
+}
+
 .landing-feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  transform: translateY(-5px);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.09);
+  border-color: transparent;
 }
 
 .landing-feature-card:hover::before {
   transform: scaleX(1);
+}
+
+.landing-feature-card:hover::after {
+  opacity: 1;
+}
+
+/* ── Scenario card hover ─────────────────────── */
+
+.scenario-card {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.scenario-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.1),
+              0 0 0 1px color-mix(in srgb, var(--scenario-color) 15%, transparent);
+  border-color: color-mix(in srgb, var(--scenario-color) 19%, transparent);
+}
+
+.scenario-cta-btn {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.scenario-cta-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--scenario-color) 35%, transparent);
+}
+
+/* ── Hero secondary CTA ──────────────────────── */
+
+.hero-secondary-cta {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(219, 234, 254, 0.95);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.hero-secondary-cta:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.28);
 }
