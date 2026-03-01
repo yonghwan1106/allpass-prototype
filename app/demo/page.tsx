@@ -28,20 +28,20 @@ function DemoContent() {
 
   return (
     <div className="flex flex-col h-screen cmd-bg overflow-hidden">
-      {/* Top bar */}
-      <header className="shrink-0 flex items-center gap-3 px-4 py-2 cmd-header z-10">
-        <Link href="/" className="text-lg font-black text-blue-400 hover:text-blue-300 transition-colors">
+      {/* Top bar + State machine (single row) */}
+      <header className="shrink-0 flex items-center gap-3 px-4 py-2 cmd-header border-b border-ap-border z-10 overflow-x-auto">
+        <Link href="/" className="text-lg font-black text-blue-400 hover:text-blue-300 transition-colors shrink-0">
           All-Pass
         </Link>
-        <span className="text-slate-600">|</span>
-        <span className="text-sm text-slate-400 font-medium">AI 민원 처리 데모</span>
-        <span className="ml-auto text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded-full font-medium">
-          LIVE
-        </span>
+        <span className="text-slate-600 shrink-0">|</span>
+        <span className="text-sm text-slate-400 font-medium shrink-0">AI 민원 처리 데모</span>
+        <div className="ml-auto shrink-0 flex items-center gap-3">
+          <StateMachine />
+          <span className="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded-full font-medium shrink-0">
+            LIVE
+          </span>
+        </div>
       </header>
-
-      {/* State machine bar */}
-      <StateMachine />
 
       {/* Main layout: Left (DAG + Tabs) | Right (Chat) */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
