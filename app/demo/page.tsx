@@ -10,8 +10,9 @@ import { LegalSearchPanel } from '@/components/legal/LegalSearchPanel';
 import { ChatInterface } from '@/components/chat/ChatInterface';
 import { StateMachine } from '@/components/monitor/StateMachine';
 import { MetricsPanel } from '@/components/monitor/MetricsPanel';
+import { AuditTrail } from '@/components/monitor/AuditTrail';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Activity, Scale, BarChart2 } from 'lucide-react';
+import { Activity, Scale, BarChart2, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 
 function DemoContent() {
@@ -71,6 +72,9 @@ function DemoContent() {
                 <TabsTrigger value="metrics" className="text-xs gap-1.5 data-[state=active]:bg-white/5 data-[state=active]:text-blue-400 text-slate-500 hover:text-slate-300 rounded-md">
                   <BarChart2 className="w-3 h-3" /> 메트릭
                 </TabsTrigger>
+                <TabsTrigger value="audit" className="text-xs gap-1.5 data-[state=active]:bg-white/5 data-[state=active]:text-emerald-400 text-slate-500 hover:text-slate-300 rounded-md">
+                  <ShieldCheck className="w-3 h-3" /> AI Audit
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="log" className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden">
@@ -87,6 +91,12 @@ function DemoContent() {
 
               <TabsContent value="metrics" className="flex-1 overflow-auto mt-0 data-[state=inactive]:hidden">
                 <MetricsPanel />
+              </TabsContent>
+
+              <TabsContent value="audit" className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden">
+                <div className="h-full overflow-hidden">
+                  <AuditTrail />
+                </div>
               </TabsContent>
             </Tabs>
           </div>

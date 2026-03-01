@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 const MAIN_STATES: { state: WorkflowState; label: string; icon: string }[] = [
   { state: 'INIT', label: '초기화', icon: '⚙️' },
   { state: 'PLANNING', label: '계획 수립', icon: '📋' },
-  { state: 'EXECUTING', label: '실행 중', icon: '⚡' },
+  { state: 'EXECUTING', label: 'MCP HUB 경유 실행', icon: '⚡' },
   { state: 'VALIDATING', label: '검증', icon: '✅' },
   { state: 'COMPLETED', label: '완료', icon: '🎉' },
 ];

@@ -28,7 +28,7 @@ function getAgentFromEvent(event: SSEEvent): { agentId?: AgentId; message: strin
     case 'pii_masking':
       return { message: `PII 마스킹 처리 (${(d.detectedTypes as string[]).join(', ')})` };
     case 'api_call':
-      return { message: `API 호출: ${d.method as string} ${d.endpoint as string} → ${d.status as number}` };
+      return { message: `🔗 MCP HUB → API 호출: ${d.method as string} ${d.endpoint as string} → ${d.status as number}` };
     case 'metrics_update':
       return { message: '메트릭 업데이트' };
     case 'complete':

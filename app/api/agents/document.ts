@@ -33,7 +33,7 @@ export async function runDocumentAgent(
       ];
       autoFillable = ['건축물대장', '임대차계약서'];
       instructions =
-        '영업신고에 필요한 서류 5종 중 2종은 마이데이터 및 공공데이터로 자동완성됩니다. 위생교육 이수 후 구청 위생과에 제출하세요.';
+        '영업신고에 필요한 서류 5종 중 2종은 마이데이터 및 공공데이터로 자동완성됩니다. 위생교육 이수 후 구청 위생과에 제출하세요.\n\n**행정정보공동이용**으로 건축물대장, 토지이용계획확인서가 자동 조회되어 별도 발급 불필요합니다.';
     } else if (task.includes('전입') || task.includes('이사')) {
       documents = [
         { name: '전입신고서', status: 'auto-filled', source: '정부24' },
@@ -42,7 +42,7 @@ export async function runDocumentAgent(
       ];
       autoFillable = ['전입신고서', '임대차계약서'];
       instructions =
-        '전입신고는 정부24 온라인 또는 주민센터 방문으로 처리 가능합니다. 신분증 지참 필수.';
+        '전입신고는 정부24 온라인 또는 주민센터 방문으로 처리 가능합니다. 신분증 지참 필수.\n\n**행정정보공동이용**을 통해 주민등록등본, 건강보험자격확인서 등 6종 서류가 자동 대체되어 별도 발급 불필요합니다.';
     } else if (task.includes('실업') || task.includes('실직') || task.includes('고용보험')) {
       documents = [
         { name: '이직확인서(회사 제출)', status: 'pending' },
@@ -51,7 +51,7 @@ export async function runDocumentAgent(
       ];
       autoFillable = [];
       instructions =
-        '고용보험 가입 이력은 자동 확인됩니다. 이직확인서는 전 직장에서 고용센터로 직접 제출합니다. 고용센터 방문 전 워크넷 구직등록 필수.';
+        '고용보험 가입 이력은 자동 확인됩니다. 이직확인서는 전 직장에서 고용센터로 직접 제출합니다. 고용센터 방문 전 워크넷 구직등록 필수.\n\n**행정정보공동이용**으로 소득증빙 서류가 자동 확인되어 별도 서류 발급 없이 복지급여 신청이 가능합니다.';
     } else {
       documents = [
         { name: '신청서', status: 'required' },
