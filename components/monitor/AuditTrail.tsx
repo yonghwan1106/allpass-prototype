@@ -3,7 +3,7 @@
 import { useRef, useEffect } from 'react';
 import { useAgentStore } from '@/lib/store/agent-store';
 import { AGENT_CONFIGS, AgentId, SSEEvent } from '@/lib/agents/types';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, FileCheck, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type AuditPhase = 'Input' | 'Reasoning' | 'Output' | 'Validation' | 'Error' | 'System';
@@ -119,8 +119,16 @@ function toAuditEntry(event: SSEEvent, index: number): AuditEntry {
   }
 }
 
+const ADMIN_INFO_ITEMS = [
+  { document: '주민등록초본', source: '행정안전부', icon: '📋' },
+  { document: '건축물대장', source: '국토교통부', icon: '🏗️' },
+  { document: '위생교육이수증', source: '식품의약품안전처', icon: '📜' },
+  { document: '소방시설점검표', source: '소방청', icon: '🚒' },
+  { document: '사업자등록증', source: '국세청', icon: '💼' },
+];
+
 export function AuditTrail() {
-  const eventLog = useAgentStore((s) => s.eventLog);
+  const { eventLog, apiCalls } = useAgentStore();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const entries: AuditEntry[] = eventLog.map((e, i) => toAuditEntry(e, i));
@@ -140,6 +148,42 @@ export function AuditTrail() {
           </span>
         )}
       </div>
+
+      {apiCalls.length > 0 && (
+        <div className="px-3 py-3 border-b border-ap-border">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-5 h-5 rounded bg-emerald-500/10 flex items-center justify-center">
+              <FileCheck className="w-3 h-3 text-emerald-400" />
+            </div>
+            <h4 className="text-xs font-semibold text-emerald-400">행정정보공동이용</h4>
+            <span className="text-[10px] text-slate-500 ml-auto">서류 제출 불필요</span>
+          </div>
+          <div className="space-y-2">
+            {ADMIN_INFO_ITEMS.map((item, i) => (
+              <motion.div
+                key={item.document}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.15 }}
+                className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-emerald-500/5 border border-emerald-500/10"
+              >
+                <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                  <span className="text-[10px]">{item.icon}</span>
+                  <span className="text-xs text-slate-300 truncate">{item.document}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-[10px] text-slate-500">→</span>
+                  <span className="text-[10px] text-emerald-400 font-medium whitespace-nowrap">{item.source}</span>
+                </div>
+                <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
+              </motion.div>
+            ))}
+          </div>
+          <p className="text-[10px] text-slate-500 mt-2 ml-1">
+            전자정부법 제36조에 따라 행정정보의 공동이용으로 서류 제출을 대체합니다
+          </p>
+        </div>
+      )}
 
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         {entries.length === 0 ? (

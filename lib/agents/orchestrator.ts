@@ -103,6 +103,75 @@ export class Orchestrator {
     }
     this.emitter.emitAgentResult('master', 'PII 마스킹 완료', Date.now() - startTime);
 
+    // ── CRISIS DETECTION (welfare scenario only) ───────────────────────────
+    if (this.scenarioId === 'welfare') {
+      // Phase 1: Scanning
+      this.emitter.emitCrisisDetection({
+        phase: 'scanning',
+        signals: [],
+      });
+      await new Promise(r => setTimeout(r, 1200));
+
+      // Phase 2: Detected
+      const signals = [
+        {
+          id: 'emp-001',
+          category: 'employment' as const,
+          label: '고용보험 상실 감지',
+          level: 'critical' as const,
+          description: '최근 고용보험 자격 상실 이력 확인',
+        },
+        {
+          id: 'fin-001',
+          category: 'finance' as const,
+          label: '소득 급감 감지',
+          level: 'warning' as const,
+          description: '마이데이터 기반 월 소득 70% 이상 감소 추정',
+        },
+        {
+          id: 'health-001',
+          category: 'health' as const,
+          label: '건강보험료 체납 위험',
+          level: 'caution' as const,
+          description: '소득 변동에 따른 건강보험료 납부 어려움 예측',
+        },
+        {
+          id: 'housing-001',
+          category: 'housing' as const,
+          label: '주거 불안정 위험',
+          level: 'caution' as const,
+          description: '소득 감소에 따른 임대료 부담 증가 예측',
+        },
+      ];
+      this.emitter.emitCrisisDetection({
+        phase: 'detected',
+        signals,
+      });
+      await new Promise(r => setTimeout(r, 1500));
+
+      // Phase 3: Matching welfare programs
+      const matchedPrograms = [
+        { name: '실업급여', description: '고용보험법 제40조에 따른 구직급여', amount: '월 198만원 (6개월)' },
+        { name: '긴급복지 생계지원', description: '긴급복지지원법 제9조 생계지원', amount: '162만 3,200원' },
+        { name: '긴급복지 의료지원', description: '긴급복지지원법 제9조 의료지원', amount: '최대 300만원' },
+        { name: '주거급여', description: '주거급여법 제7조 임차급여', amount: '월 최대 33만원' },
+        { name: '국민취업지원제도', description: '구직촉진수당 + 취업지원서비스', amount: '월 50만원 (6개월)' },
+      ];
+      this.emitter.emitCrisisDetection({
+        phase: 'matching',
+        signals,
+        matchedPrograms,
+      });
+      await new Promise(r => setTimeout(r, 1000));
+
+      // Phase 4: Complete
+      this.emitter.emitCrisisDetection({
+        phase: 'complete',
+        signals,
+        matchedPrograms,
+      });
+    }
+
     // ── PLANNING ──────────────────────────────────────────────────────────
     this.emitter.emitWorkflowState('PLANNING');
 
@@ -192,6 +261,45 @@ export class Orchestrator {
     }
 
     this.emitter.emitAgentResult('master', '응답 합성 완료', Date.now() - startTime);
+
+    // ── HUMAN_REVIEW (welfare scenario only) ──────────────────────────────
+    if (this.scenarioId === 'welfare') {
+      this.emitter.emitWorkflowState('HUMAN_REVIEW');
+      this.emitter.emitHumanApprovalRequest({
+        approvalId: crypto.randomUUID(),
+        action: '긴급복지 생계지원금 지급 결정',
+        description:
+          '긴급복지지원법 제9조에 따른 생계지원 대상자로 판정되었습니다. 최종 지급을 위해 담당 공무원의 승인이 필요합니다.',
+        riskLevel: 'high',
+        legalBasis: '긴급복지지원법 제9조(긴급지원의 종류 및 내용)',
+        amount: '1,623,200원',
+        beneficiary: '김민수 (가명)',
+        details: {
+          '지원 유형': '생계지원',
+          '지원 기간': '1개월',
+          '산정 기준': '기준 중위소득 30% 이하',
+          '심사 결과': '적격 (마이데이터 기반 소득·재산 확인)',
+        },
+      });
+      this.emitter.emitMessage(
+        '⏸️ 공무원 승인 대기 중... 긴급복지 생계지원금 지급을 위해 담당자의 최종 확인이 필요합니다.'
+      );
+
+      // Demo: wait ~5 seconds simulating the human review pause, then auto-continue
+      await new Promise((r) => setTimeout(r, 100));
+      await new Promise((r) => setTimeout(r, 5000));
+
+      // Emit approval response (auto-approved for demo)
+      this.emitter.emit({
+        type: 'human_approval_response',
+        timestamp: Date.now(),
+        data: {
+          approvalId: 'demo-auto',
+          decision: 'approved',
+          reason: '시스템 자동 승인 (데모)',
+        },
+      });
+    }
 
     // ── COMPLETED ─────────────────────────────────────────────────────────
     this.emitter.emitWorkflowState('COMPLETED');

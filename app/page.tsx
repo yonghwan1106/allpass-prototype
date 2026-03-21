@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Hero } from '@/components/landing/Hero';
 import { Features } from '@/components/landing/Features';
 import { ScenarioCards } from '@/components/landing/ScenarioCards';
@@ -16,6 +17,16 @@ export default function HomePage() {
       />
 
       <Features />
+
+      {/* As-Is vs To-Be CTA */}
+      <section className="py-12 px-6 text-center" style={{ backgroundColor: '#f0f4ff' }}>
+        <h3 className="text-2xl font-bold text-slate-800 mb-3">현행 vs All-Pass 비교</h3>
+        <p className="text-slate-600 mb-6">기존 민원 처리 방식과 All-Pass의 차이를 한눈에 확인하세요</p>
+        <Link href="/compare" className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-500/25">
+          비교 보기 →
+        </Link>
+      </section>
+
       <ScenarioCards />
 
       {/* ScenarioCards (light) → Footer (dark) transition */}

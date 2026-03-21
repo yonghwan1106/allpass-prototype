@@ -1,0 +1,371 @@
+[
+  {
+    "type": "workflow_state",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "state": "INIT" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "master", "task": "사용자 입력 분석 및 PII 마스킹" }
+  },
+  {
+    "type": "agent_thinking",
+    "timestamp": 0,
+    "_delay": 700,
+    "data": { "agentId": "master", "thought": "연남동 383-22번지 주소 정보 및 개인정보 식별 중..." }
+  },
+  {
+    "type": "pii_masking",
+    "timestamp": 0,
+    "_delay": 400,
+    "data": {
+      "original": "연남동 383-22번지 1층에 파스타 가게를 내려고 해요",
+      "masked": "[주소***] 1층에 파스타 가게를 내려고 해요",
+      "detectedTypes": ["address"],
+      "detectedSpans": ["연남동 383-22번지"]
+    }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 350,
+    "data": { "agentId": "master", "result": "PII 마스킹 완료. 주소 1건 처리.", "duration": 312 }
+  },
+  {
+    "type": "workflow_state",
+    "timestamp": 0,
+    "_delay": 250,
+    "data": { "state": "PLANNING" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 350,
+    "data": { "agentId": "master", "task": "의도 분석: 음식점 창업 민원 분류" }
+  },
+  {
+    "type": "agent_thinking",
+    "timestamp": 0,
+    "_delay": 900,
+    "data": { "agentId": "master", "thought": "음식점 영업허가 + 건축물 용도 확인 + 위생교육 + 보건증 + 사업자등록으로 분류됨. 복합민원 카테고리: restaurant" }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 400,
+    "data": { "agentId": "master", "result": "의도 분석 완료: 음식점 영업허가 및 창업 절차 안내 (복잡도: complex)", "duration": 845 }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 350,
+    "data": { "agentId": "planner", "task": "DAG 계획 수립: 7단계 병렬 처리 플랜 생성" }
+  },
+  {
+    "type": "agent_thinking",
+    "timestamp": 0,
+    "_delay": 1100,
+    "data": { "agentId": "planner", "thought": "step-1(건축물대장), step-3(위생교육), step-4(보건증)은 병렬 실행 가능. step-2는 step-1 완료 후, step-5는 step-1,2,3,4 모두 완료 후 실행." }
+  },
+  {
+    "type": "dag_update",
+    "timestamp": 0,
+    "_delay": 600,
+    "data": {
+      "dag": {
+        "id": "restaurant-dag",
+        "title": "소상공인 식당 창업 처리 계획",
+        "nodes": [
+          { "id": "step-1", "label": "건축물대장 조회 (MCP HUB)", "agentId": "api", "status": "pending", "description": "해당 주소의 건축물대장을 조회하여 용도와 면적 확인", "dependencies": [] },
+          { "id": "step-2", "label": "용도변경 검토", "agentId": "legal", "status": "pending", "description": "일반음식점 영업이 가능한 용도인지 법령 기반 검토", "dependencies": ["step-1"] },
+          { "id": "step-3", "label": "위생교육 이수 안내", "agentId": "document", "status": "pending", "description": "식품위생교육 이수 절차 및 일정 안내", "dependencies": [] },
+          { "id": "step-4", "label": "건강진단(보건증) 발급", "agentId": "scheduler", "status": "pending", "description": "보건소 건강진단 예약 및 일정 최적화", "dependencies": [] },
+          { "id": "step-5", "label": "영업허가 신청", "agentId": "document", "status": "pending", "description": "영업허가 신청서류 목록 생성 및 자동완성", "dependencies": ["step-1", "step-2", "step-3", "step-4"] },
+          { "id": "step-6", "label": "사업자등록 신청 (MCP HUB)", "agentId": "api", "status": "pending", "description": "홈택스 사업자등록 신청 연계", "dependencies": ["step-5"] },
+          { "id": "step-7", "label": "소상공인 혜택 안내 (MCP HUB)", "agentId": "api", "status": "pending", "description": "소상공인 지원금, 세제혜택 등 안내", "dependencies": ["step-6"] }
+        ],
+        "edges": [
+          { "id": "e1-2", "source": "step-1", "target": "step-2" },
+          { "id": "e1-5", "source": "step-1", "target": "step-5" },
+          { "id": "e2-5", "source": "step-2", "target": "step-5" },
+          { "id": "e3-5", "source": "step-3", "target": "step-5" },
+          { "id": "e4-5", "source": "step-4", "target": "step-5" },
+          { "id": "e5-6", "source": "step-5", "target": "step-6" },
+          { "id": "e6-7", "source": "step-6", "target": "step-7" }
+        ]
+      }
+    }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "planner", "result": "7단계 DAG 생성 완료. 병렬 실행 가능: step-1, step-3, step-4", "duration": 1032 }
+  },
+  {
+    "type": "workflow_state",
+    "timestamp": 0,
+    "_delay": 250,
+    "data": { "state": "EXECUTING" }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-1", "status": "running" }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 150,
+    "data": { "nodeId": "step-3", "status": "running" }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 150,
+    "data": { "nodeId": "step-4", "status": "running" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "api", "task": "건축물대장 조회: 서울특별시 마포구 연남동 383-22" }
+  },
+  {
+    "type": "api_call",
+    "timestamp": 0,
+    "_delay": 700,
+    "data": {
+      "endpoint": "building_registry",
+      "method": "GET",
+      "status": 200,
+      "responseTime": 342,
+      "result": {
+        "address": "서울특별시 마포구 연남동 383-22",
+        "mainUse": "제2종근린생활시설(일반음식점)",
+        "area": 82.5,
+        "violationStatus": "없음"
+      }
+    }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 350,
+    "data": { "agentId": "api", "result": "건축물대장 조회 완료: 제2종근린생활시설(일반음식점), 82.5㎡, 위반건축물 없음", "duration": 412 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-1", "status": "completed", "result": "제2종근린생활시설(일반음식점) 확인", "duration": 412 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 150,
+    "data": { "nodeId": "step-2", "status": "running" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "legal", "task": "식품위생법·건축법 기반 용도 적합성 검토" }
+  },
+  {
+    "type": "agent_thinking",
+    "timestamp": 0,
+    "_delay": 900,
+    "data": { "agentId": "legal", "thought": "제2종근린생활시설(일반음식점) 용도로 기재되어 있어 용도변경 불필요. 식품위생법 제36조 시설기준 충족 여부 확인 중." }
+  },
+  {
+    "type": "legal_citation",
+    "timestamp": 0,
+    "_delay": 400,
+    "data": {
+      "lawName": "식품위생법",
+      "article": "제36조(시설기준), 제37조 제4항(영업신고), 제41조(식품위생교육)",
+      "content": "일반음식점은 영업신고 대상이며, 영업신고 전 식품위생교육(6시간) 이수가 필수입니다.",
+      "relevance": "연남동 383-22 건축물 용도가 일반음식점으로 기재되어 있어 용도변경 없이 영업신고 가능"
+    }
+  },
+  {
+    "type": "legal_citation",
+    "timestamp": 0,
+    "_delay": 400,
+    "data": {
+      "lawName": "건축법",
+      "article": "제19조(용도변경), 시행령 별표1",
+      "content": "건축물 용도 중 제2종 근린생활시설(일반음식점)은 별도의 용도변경 절차 없이 음식점 영업 가능.",
+      "relevance": "용도변경 불필요 확인 — 바로 영업신고 절차 진행 가능"
+    }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 350,
+    "data": { "agentId": "legal", "result": "용도변경 불필요. 일반음식점 영업신고 가능. 위생교육 이수 필수.", "duration": 1123 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-2", "status": "completed", "result": "용도변경 불필요 확인", "duration": 1123 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-3", "status": "completed", "result": "위생교육 일정 안내 완료 (3/5 마포센터)", "duration": 634 }
+  },
+  {
+    "type": "api_call",
+    "timestamp": 0,
+    "_delay": 350,
+    "data": {
+      "endpoint": "food_education",
+      "method": "GET",
+      "status": 200,
+      "responseTime": 218,
+      "result": {
+        "date": "2026-03-05",
+        "location": "서울시 식품위생교육원 마포센터",
+        "duration": "6시간",
+        "onlineAvailable": true
+      }
+    }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-4", "status": "completed", "result": "마포구 보건소 3/3(월) 오전 예약 완료", "duration": 521 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-5", "status": "running" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "document", "task": "영업허가 신청서류 목록 생성 및 자동완성" }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 500,
+    "data": { "agentId": "document", "result": "영업신고서, 건축물대장(자동), 임대차계약서 사본(마이데이터), 위생교육이수증, 건강진단결과서, 사업자등록신청서 — 6종 목록 생성", "duration": 487 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-5", "status": "completed", "result": "영업허가 신청서류 6종 자동완성", "duration": 487 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-6", "status": "running" }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 400,
+    "data": { "agentId": "api", "result": "홈택스 사업자등록 신청 연계 완료", "duration": 356 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-6", "status": "completed", "result": "사업자등록 신청 연계 완료", "duration": 356 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-7", "status": "running" }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 400,
+    "data": { "agentId": "api", "result": "소상공인 지원금 및 세제혜택 5종 확인 완료", "duration": 298 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-7", "status": "completed", "result": "소상공인 혜택 5종 안내 준비", "duration": 298 }
+  },
+  {
+    "type": "workflow_state",
+    "timestamp": 0,
+    "_delay": 250,
+    "data": { "state": "VALIDATING" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "validator", "task": "전체 처리 결과 검증 및 할루시네이션 탐지" }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 600,
+    "data": { "agentId": "validator", "result": "검증 완료. 법령 인용 2건 정확성 확인. 할루시네이션 없음. 서류 목록 일치.", "duration": 578 }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "master", "task": "최종 응답 합성" }
+  },
+  {
+    "type": "agent_thinking",
+    "timestamp": 0,
+    "_delay": 800,
+    "data": { "agentId": "master", "thought": "7단계 처리 결과를 통합하여 김도전 씨에게 맞춤형 창업 안내 생성 중..." }
+  },
+  {
+    "type": "workflow_state",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "state": "COMPLETED" }
+  },
+  {
+    "type": "metrics_update",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": {
+      "totalTime": 47,
+      "agentCalls": 8,
+      "apiCalls": 2,
+      "legalCitations": 2,
+      "documentsGenerated": 6,
+      "timeReduction": 83
+    }
+  },
+  {
+    "type": "message",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": {
+      "content": "안녕하세요! 연남동 파스타 가게 창업을 위한 절차를 정리해 드렸습니다.\n\n**건축물 확인 완료**\n연남동 383-22는 제2종 근린생활시설(일반음식점)로 용도변경 없이 바로 영업신고가 가능합니다.\n\n✅ **행정정보공동이용**: 건축물대장, 토지이용계획확인서 자동 조회 완료. 해당 서류는 직접 발급·제출하지 않아도 됩니다.\n\n**필요 서류** (6종)\n- 영업신고서 (자동완성)\n- 건축물대장 (행정정보공동이용 자동 조회 완료)\n- 임대차계약서 사본 (마이데이터 자동완성)\n- 위생교육 이수증\n- 건강진단결과서(보건증)\n- 사업자등록신청서\n\n**처리 순서**\n1. [동시진행] 건축물대장 조회 + 위생교육 신청 + 보건소 예약\n2. 위생교육 이수 (3/5 마포센터 또는 온라인)\n3. 보건증 발급 (3/3 마포구보건소)\n4. 마포구청 위생과 영업신고 접수 (처리기간 3일)\n5. 홈택스 사업자등록 신청\n6. 소상공인 지원금 신청 안내\n\n**예상 소요시간**: 47초 (AI 처리) / 실제 수속: 약 2주"
+    }
+  },
+  {
+    "type": "complete",
+    "timestamp": 0,
+    "_delay": 100,
+    "data": {}
+  }
+]

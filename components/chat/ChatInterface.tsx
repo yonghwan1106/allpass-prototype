@@ -7,7 +7,8 @@ import { useAgentStore } from '@/lib/store/agent-store';
 import { SCENARIOS, ScenarioId, SSEEvent, AgentId } from '@/lib/agents/types';
 import { MessageBubble } from './MessageBubble';
 import { TypingIndicator } from './TypingIndicator';
-import { Send, RotateCcw } from 'lucide-react';
+import { Send, RotateCcw, Mic, FileText } from 'lucide-react';
+import { ResultReport } from '@/components/monitor/ResultReport';
 
 export function ChatInterface() {
   const {
@@ -33,10 +34,19 @@ export function ChatInterface() {
     addEvent,
     addPIIEvent,
     addAPICall,
+    setPendingApproval,
+    setCrisisSignals,
+    setCrisisPhase,
+    setCrisisPrograms,
     reset: resetAgent,
   } = useAgentStore();
 
   const [errorDemo, setErrorDemo] = useState(false);
+  const [replayMode, setReplayMode] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+
+  const workflowState = useAgentStore(s => s.workflowState);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -143,12 +153,27 @@ export function ChatInterface() {
         updateLastAssistantMessage(d.content as string);
         break;
 
+      case 'human_approval_request':
+        setPendingApproval(d as Parameters<typeof setPendingApproval>[0]);
+        break;
+
+      case 'human_approval_response':
+        setPendingApproval(null);
+        break;
+
+      case 'crisis_detection':
+        // TODO: wire up CrisisDetectionPanel when implemented
+        if (d.phase) setCrisisPhase(d.phase as Parameters<typeof setCrisisPhase>[0]);
+        if (d.signals) setCrisisSignals(d.signals as Parameters<typeof setCrisisSignals>[0]);
+        if (d.matchedPrograms) setCrisisPrograms(d.matchedPrograms as Parameters<typeof setCrisisPrograms>[0]);
+        break;
+
       case 'complete':
         setStreaming(false);
         setWorkflowState('COMPLETED');
         break;
     }
-  }, [addEvent, setWorkflowState, updateAgent, setDAG, updateDAGNode, addCitation, addPIIEvent, addAPICall, setMetrics, updateLastAssistantMessage, setStreaming]);
+  }, [addEvent, setWorkflowState, updateAgent, setDAG, updateDAGNode, addCitation, addPIIEvent, addAPICall, setMetrics, updateLastAssistantMessage, setStreaming, setPendingApproval, setCrisisSignals, setCrisisPhase, setCrisisPrograms]);
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || isStreaming) return;
@@ -177,7 +202,7 @@ export function ChatInterface() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text.trim(), scenarioId: currentScenario, errorDemo }),
+        body: JSON.stringify({ message: text.trim(), scenarioId: currentScenario, errorDemo, mode: replayMode ? 'replay' : undefined }),
       });
 
       if (!response.ok || !response.body) {
@@ -214,7 +239,48 @@ export function ChatInterface() {
       updateLastAssistantMessage('오류가 발생했습니다. 다시 시도해 주세요.');
       setStreaming(false);
     }
-  }, [isStreaming, currentScenario, errorDemo, addMessage, setInputValue, setStreaming, handleSSEEvent, updateLastAssistantMessage]);
+  }, [isStreaming, currentScenario, errorDemo, replayMode, addMessage, setInputValue, setStreaming, handleSSEEvent, updateLastAssistantMessage]);
+
+  const simulateVoiceInput = useCallback(() => {
+    setIsListening(true);
+    setTimeout(() => {
+      const scenario = currentScenario ? SCENARIOS[currentScenario] : null;
+      setInputValue(scenario?.defaultInput ?? '식당을 창업하려고 하는데 어떤 절차가 필요한가요?');
+      setIsListening(false);
+    }, 2000);
+  }, [currentScenario, setInputValue]);
+
+  const handleVoiceInput = useCallback(() => {
+    if (isListening) return;
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ko-KR';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      setIsListening(true);
+      recognition.start();
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInputValue(transcript);
+        setIsListening(false);
+      };
+
+      recognition.onerror = () => {
+        simulateVoiceInput();
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+    } else {
+      simulateVoiceInput();
+    }
+  }, [isListening, simulateVoiceInput, setInputValue]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -239,7 +305,7 @@ export function ChatInterface() {
   return (
     <div className="flex flex-col h-full bg-ap-base border-t border-ap-border">
       {/* Scenario quick-select */}
-      <div className="flex items-center gap-2 px-4 py-2 border-b border-ap-border bg-ap-panel overflow-x-auto shrink-0">
+      <div className="flex items-center gap-2 px-3 sm:px-4 py-2 border-b border-ap-border bg-ap-panel overflow-x-auto shrink-0" style={{ WebkitOverflowScrolling: 'touch' }}>
         <span className="text-xs text-slate-500 shrink-0">시나리오:</span>
         {(Object.values(SCENARIOS) as (typeof SCENARIOS)[ScenarioId][]).map((scenario) => (
           <button
@@ -286,6 +352,17 @@ export function ChatInterface() {
           ⚡ 에러 복구
         </button>
         <button
+          onClick={() => setReplayMode(!replayMode)}
+          className={`shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border transition-all duration-150 ${
+            replayMode
+              ? 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+              : 'bg-ap-card text-slate-500 border-ap-border hover:border-slate-500'
+          }`}
+          title="시뮬레이션 모드 (녹화 재생)"
+        >
+          🔄 시뮬레이션
+        </button>
+        <button
           onClick={handleReset}
           className="ml-auto shrink-0 p-1.5 rounded-full hover:bg-white/5 text-slate-500 transition-colors"
           title="초기화"
@@ -318,8 +395,20 @@ export function ChatInterface() {
         </div>
       </div>
 
+      {/* Result report button */}
+      {workflowState === 'COMPLETED' && (
+        <div className="shrink-0 px-3 py-2 border-t border-ap-border">
+          <button
+            onClick={() => setShowReport(true)}
+            className="w-full py-2 rounded-xl bg-blue-500/10 text-blue-400 text-sm font-medium border border-blue-500/20 hover:bg-blue-500/20 transition-colors flex items-center justify-center gap-2"
+          >
+            <FileText className="w-4 h-4" /> 결과 보고서 보기
+          </button>
+        </div>
+      )}
+
       {/* Input area */}
-      <div className="shrink-0 border-t border-ap-border bg-ap-panel p-3">
+      <div className="shrink-0 border-t border-ap-border bg-ap-panel p-2 sm:p-3">
         <div className="flex items-end gap-2">
           <textarea
             ref={textareaRef}
@@ -332,6 +421,18 @@ export function ChatInterface() {
             className="flex-1 resize-none rounded-xl border border-ap-border bg-ap-card px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           />
           <button
+            onClick={handleVoiceInput}
+            disabled={isStreaming || isListening}
+            className={`shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              isListening
+                ? 'bg-red-500 text-white animate-pulse'
+                : 'bg-ap-card text-slate-400 border border-ap-border hover:border-slate-500 hover:text-slate-300'
+            } disabled:opacity-40 disabled:cursor-not-allowed`}
+            title="음성 입력"
+          >
+            <Mic className="w-4 h-4" />
+          </button>
+          <button
             onClick={() => sendMessage(inputValue)}
             disabled={isStreaming || !inputValue.trim()}
             className="shrink-0 w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center hover:bg-blue-500 hover:shadow-[0_0_12px_rgba(59,130,246,0.4)] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
@@ -343,6 +444,8 @@ export function ChatInterface() {
           Enter로 전송 · Shift+Enter로 줄바꿈
         </p>
       </div>
+
+      <ResultReport isOpen={showReport} onClose={() => setShowReport(false)} />
     </div>
   );
 }

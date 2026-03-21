@@ -138,6 +138,9 @@ export type SSEEventType =
   | 'api_call'
   | 'message'
   | 'metrics_update'
+  | 'human_approval_request'
+  | 'human_approval_response'
+  | 'crisis_detection'
   | 'complete';
 
 export interface SSEEvent {
@@ -211,6 +214,50 @@ export interface MetricsUpdateEvent extends SSEEvent {
     legalCitations: number;
     documentsGenerated: number;
     timeReduction: number;
+  };
+}
+
+export interface HumanApprovalRequestEvent extends SSEEvent {
+  type: 'human_approval_request';
+  data: {
+    approvalId: string;
+    action: string;
+    description: string;
+    riskLevel: 'low' | 'medium' | 'high' | 'critical';
+    legalBasis: string;
+    amount?: string;
+    beneficiary?: string;
+    details: Record<string, string>;
+  };
+}
+
+export interface HumanApprovalResponseEvent extends SSEEvent {
+  type: 'human_approval_response';
+  data: {
+    approvalId: string;
+    decision: 'approved' | 'rejected' | 'modified';
+    reason?: string;
+  };
+}
+
+export type CrisisCategory = 'employment' | 'health' | 'housing' | 'finance' | 'family';
+export type CrisisLevel = 'normal' | 'caution' | 'warning' | 'critical';
+
+export interface CrisisSignal {
+  id: string;
+  category: CrisisCategory;
+  label: string;
+  level: CrisisLevel;
+  description: string;
+  matchedPrograms?: string[];
+}
+
+export interface CrisisDetectionEvent extends SSEEvent {
+  type: 'crisis_detection';
+  data: {
+    phase: 'scanning' | 'detected' | 'matching' | 'complete';
+    signals: CrisisSignal[];
+    matchedPrograms?: Array<{ name: string; description: string; amount?: string }>;
   };
 }
 

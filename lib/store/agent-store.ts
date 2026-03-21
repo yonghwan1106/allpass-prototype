@@ -8,6 +8,8 @@ import type {
   LegalCitation,
   SSEEvent,
   MetricsUpdateEvent,
+  HumanApprovalRequestEvent,
+  CrisisSignal,
 } from '@/lib/agents/types';
 
 interface AgentState {
@@ -45,6 +47,14 @@ interface AgentStore {
   // API call events
   apiCalls: Array<{ endpoint: string; method: string; status: number; responseTime: number }>;
 
+  // Human-in-the-Loop approval
+  pendingApproval: HumanApprovalRequestEvent['data'] | null;
+
+  // Crisis detection
+  crisisSignals: CrisisSignal[];
+  crisisPhase: 'idle' | 'scanning' | 'detected' | 'matching' | 'complete';
+  crisisPrograms: Array<{ name: string; description: string; amount?: string }>;
+
   // Actions
   setWorkflowState: (state: WorkflowState) => void;
   updateAgent: (id: AgentId, update: Partial<AgentState>) => void;
@@ -55,6 +65,10 @@ interface AgentStore {
   addEvent: (event: SSEEvent) => void;
   addPIIEvent: (event: { original: string; masked: string; detectedTypes: string[]; detectedSpans: string[] }) => void;
   addAPICall: (call: { endpoint: string; method: string; status: number; responseTime: number }) => void;
+  setPendingApproval: (approval: HumanApprovalRequestEvent['data'] | null) => void;
+  setCrisisSignals: (signals: CrisisSignal[]) => void;
+  setCrisisPhase: (phase: 'idle' | 'scanning' | 'detected' | 'matching' | 'complete') => void;
+  setCrisisPrograms: (programs: Array<{ name: string; description: string; amount?: string }>) => void;
   reset: () => void;
 }
 
@@ -87,6 +101,10 @@ export const useAgentStore = create<AgentStore>((set) => ({
   eventLog: [],
   piiEvents: [],
   apiCalls: [],
+  pendingApproval: null,
+  crisisSignals: [],
+  crisisPhase: 'idle',
+  crisisPrograms: [],
 
   setWorkflowState: (workflowState) =>
     set((state) => ({
@@ -131,6 +149,14 @@ export const useAgentStore = create<AgentStore>((set) => ({
   addAPICall: (call) =>
     set((state) => ({ apiCalls: [...state.apiCalls, call] })),
 
+  setPendingApproval: (approval) => set({ pendingApproval: approval }),
+
+  setCrisisSignals: (signals) => set({ crisisSignals: signals }),
+
+  setCrisisPhase: (phase) => set({ crisisPhase: phase }),
+
+  setCrisisPrograms: (programs) => set({ crisisPrograms: programs }),
+
   reset: () =>
     set({
       workflowState: 'INIT',
@@ -142,5 +168,9 @@ export const useAgentStore = create<AgentStore>((set) => ({
       eventLog: [],
       piiEvents: [],
       apiCalls: [],
+      pendingApproval: null,
+      crisisSignals: [],
+      crisisPhase: 'idle',
+      crisisPrograms: [],
     }),
 }));

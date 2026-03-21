@@ -1,0 +1,318 @@
+[
+  {
+    "type": "workflow_state",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "state": "INIT" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "master", "task": "사용자 입력 분석 및 PII 마스킹" }
+  },
+  {
+    "type": "agent_thinking",
+    "timestamp": 0,
+    "_delay": 600,
+    "data": { "agentId": "master", "thought": "가족 구성원 정보(이름, 나이) 및 주소 정보 식별 중..." }
+  },
+  {
+    "type": "pii_masking",
+    "timestamp": 0,
+    "_delay": 400,
+    "data": {
+      "original": "수원시 영통구로 이사해요. 남편이랑 아이(3살) 포함 전입신고 해주세요.",
+      "masked": "[지역***]로 이사해요. [가족정보***] 포함 전입신고 해주세요.",
+      "detectedTypes": ["address", "family_info"],
+      "detectedSpans": ["수원시 영통구", "남편이랑 아이(3살)"]
+    }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 350,
+    "data": { "agentId": "master", "result": "PII 마스킹 완료. 주소 1건, 가족정보 1건 처리.", "duration": 287 }
+  },
+  {
+    "type": "workflow_state",
+    "timestamp": 0,
+    "_delay": 250,
+    "data": { "state": "PLANNING" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 350,
+    "data": { "agentId": "master", "task": "의도 분석: 전입신고 및 파생민원 분류" }
+  },
+  {
+    "type": "agent_thinking",
+    "timestamp": 0,
+    "_delay": 800,
+    "data": { "agentId": "master", "thought": "전입신고 1건이 건강보험, 국민연금, 자동차등록, 보육 등 파생민원 6건으로 연결됨. 카테고리: relocation, 복잡도: multi" }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 400,
+    "data": { "agentId": "master", "result": "의도 분석 완료: 전입신고 및 연계 파생민원 일괄 처리 (1건 입력 → 7건 자동 연계)", "duration": 712 }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 350,
+    "data": { "agentId": "planner", "task": "DAG 계획 수립: step-1 완료 후 6개 병렬 파생 처리" }
+  },
+  {
+    "type": "agent_thinking",
+    "timestamp": 0,
+    "_delay": 900,
+    "data": { "agentId": "planner", "thought": "step-1(전입신고)이 완료되면 step-2~7이 모두 병렬로 실행 가능. 최대 병렬도 6. 예상 처리시간 38초." }
+  },
+  {
+    "type": "dag_update",
+    "timestamp": 0,
+    "_delay": 600,
+    "data": {
+      "dag": {
+        "id": "relocation-dag",
+        "title": "전입신고 및 파생민원 처리 계획",
+        "nodes": [
+          { "id": "step-1", "label": "전입신고 처리 (MCP HUB)", "agentId": "api", "status": "pending", "description": "주민등록법 제10조에 따라 세대 전원 전입신고 처리", "dependencies": [] },
+          { "id": "step-2", "label": "주민등록증 주소변경", "agentId": "document", "status": "pending", "description": "세대원 주민등록증 주소 스티커 부착 또는 재발급 안내", "dependencies": ["step-1"] },
+          { "id": "step-3", "label": "건강보험 자격변동 (MCP HUB)", "agentId": "api", "status": "pending", "description": "국민건강보험공단 주소변경 자동 통보 처리", "dependencies": ["step-1"] },
+          { "id": "step-4", "label": "국민연금 주소변경 (MCP HUB)", "agentId": "api", "status": "pending", "description": "국민연금공단 주소변경 자동 연계", "dependencies": ["step-1"] },
+          { "id": "step-5", "label": "자동차등록증 주소변경 (MCP HUB)", "agentId": "api", "status": "pending", "description": "자동차등록 주소변경 안내 (15일 이내 필수)", "dependencies": ["step-1"] },
+          { "id": "step-6", "label": "초등학교 전학신청 안내", "agentId": "document", "status": "pending", "description": "수원시 영통구 초등학교 배정 및 전학신청 절차 안내", "dependencies": ["step-1"] },
+          { "id": "step-7", "label": "지역주민 혜택 안내 (MCP HUB)", "agentId": "api", "status": "pending", "description": "수원시 영통구 이사 가정 대상 지역 혜택 및 보육 지원 안내", "dependencies": ["step-1"] }
+        ],
+        "edges": [
+          { "id": "e1-2", "source": "step-1", "target": "step-2" },
+          { "id": "e1-3", "source": "step-1", "target": "step-3" },
+          { "id": "e1-4", "source": "step-1", "target": "step-4" },
+          { "id": "e1-5", "source": "step-1", "target": "step-5" },
+          { "id": "e1-6", "source": "step-1", "target": "step-6" },
+          { "id": "e1-7", "source": "step-1", "target": "step-7" }
+        ]
+      }
+    }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "planner", "result": "7단계 DAG 생성 완료. 전입신고 이후 6개 파생민원 병렬 처리.", "duration": 887 }
+  },
+  {
+    "type": "workflow_state",
+    "timestamp": 0,
+    "_delay": 250,
+    "data": { "state": "EXECUTING" }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-1", "status": "running" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "api", "task": "전입신고 처리: 수원시 영통구 3인 세대" }
+  },
+  {
+    "type": "api_call",
+    "timestamp": 0,
+    "_delay": 800,
+    "data": {
+      "endpoint": "resident_transfer",
+      "method": "POST",
+      "status": 200,
+      "responseTime": 523,
+      "result": {
+        "confirmationNumber": "MOI-20260301-0042",
+        "newAddress": "경기도 수원시 영통구 매탄동 123-45",
+        "memberCount": 3
+      }
+    }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 350,
+    "data": { "agentId": "api", "result": "전입신고 완료. 접수번호: MOI-20260301-0042. 3인 세대(박이사, 김배우, 박아이) 등록.", "duration": 623 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 150,
+    "data": { "nodeId": "step-1", "status": "completed", "result": "전입신고 완료 — MOI-20260301-0042", "duration": 623 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 100,
+    "data": { "nodeId": "step-2", "status": "running" }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 100,
+    "data": { "nodeId": "step-3", "status": "running" }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 100,
+    "data": { "nodeId": "step-4", "status": "running" }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 100,
+    "data": { "nodeId": "step-5", "status": "running" }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 100,
+    "data": { "nodeId": "step-6", "status": "running" }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 100,
+    "data": { "nodeId": "step-7", "status": "running" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 250,
+    "data": { "agentId": "api", "task": "건강보험, 국민연금, 자동차등록 주소변경 자동 연계" }
+  },
+  {
+    "type": "api_call",
+    "timestamp": 0,
+    "_delay": 500,
+    "data": {
+      "endpoint": "nhis_address_update",
+      "method": "POST",
+      "status": 200,
+      "responseTime": 198,
+      "result": { "updated": true, "effectiveDate": "2026-03-01" }
+    }
+  },
+  {
+    "type": "api_call",
+    "timestamp": 0,
+    "_delay": 400,
+    "data": {
+      "endpoint": "nps_address_update",
+      "method": "POST",
+      "status": 200,
+      "responseTime": 154,
+      "result": { "updated": true }
+    }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-3", "status": "completed", "result": "건강보험 주소변경 자동 통보 완료 (3일 내 반영)", "duration": 312 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-4", "status": "completed", "result": "국민연금 주소변경 자동 처리 완료", "duration": 267 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-5", "status": "completed", "result": "자동차등록증 주소변경 안내 (15일 이내 필수)", "duration": 289 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-2", "status": "completed", "result": "주민등록증 주소변경 안내 완료", "duration": 334 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-6", "status": "completed", "result": "영통구 보육 포털 어린이집 신청 안내 완료", "duration": 298 }
+  },
+  {
+    "type": "dag_node_update",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "nodeId": "step-7", "status": "completed", "result": "영통구 전입 가정 지역사랑상품권 10만원 안내", "duration": 276 }
+  },
+  {
+    "type": "workflow_state",
+    "timestamp": 0,
+    "_delay": 250,
+    "data": { "state": "VALIDATING" }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "validator", "task": "전입신고 및 파생민원 처리 결과 검증" }
+  },
+  {
+    "type": "agent_result",
+    "timestamp": 0,
+    "_delay": 500,
+    "data": { "agentId": "validator", "result": "검증 완료. 7건 전체 처리 확인. 자동차등록 15일 기한 경고 포함.", "duration": 445 }
+  },
+  {
+    "type": "agent_start",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": { "agentId": "master", "task": "최종 응답 합성: 1건 입력 → 7건 자동 연계 결과" }
+  },
+  {
+    "type": "agent_thinking",
+    "timestamp": 0,
+    "_delay": 700,
+    "data": { "agentId": "master", "thought": "전입신고 완료 및 6개 파생민원 자동 연계 결과를 통합 정리 중. 자동차등록 기한 경고 강조 필요." }
+  },
+  {
+    "type": "workflow_state",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": { "state": "COMPLETED" }
+  },
+  {
+    "type": "metrics_update",
+    "timestamp": 0,
+    "_delay": 300,
+    "data": {
+      "totalTime": 38,
+      "agentCalls": 6,
+      "apiCalls": 3,
+      "legalCitations": 0,
+      "documentsGenerated": 2,
+      "timeReduction": 91
+    }
+  },
+  {
+    "type": "message",
+    "timestamp": 0,
+    "_delay": 200,
+    "data": {
+      "content": "전입신고 처리가 완료되었습니다! 수원시 영통구로의 이사를 축하드립니다.\n\n**전입신고 완료** (3인 세대)\n- 세대주: 박이사\n- 배우자: 김배우\n- 자녀: 박아이(3세)\n\n✅ **행정정보공동이용**: 주민등록등본, 건강보험자격확인서, 국민연금가입증명서, 가족관계증명서 등 6종 서류가 기관 간 자동 공유됩니다. 서류를 직접 발급·제출하실 필요가 없습니다.\n\n**자동 연계 처리** (파생민원 6종 동시 처리)\n1. 주민등록증 주소변경 → 가까운 주민센터 방문 또는 온라인 신청\n2. 건강보험 주소변경 → 공단 자동 통보 (3일 내 반영)\n3. 국민연금 주소변경 → 자동 처리 완료\n4. 자동차등록증 주소변경 → 15일 이내 필수! 수원 차량등록사업소 방문\n5. 보육 지원 → 수원시 보육포털에서 어린이집 신청 가능\n6. 지역 혜택 → 영통구 전입 가정 지역사랑상품권 10만원 지급\n\n**꼭 챙기세요!**\n자동차등록증 주소변경은 전입 후 15일 이내 미이행 시 과태료 부과됩니다."
+    }
+  },
+  {
+    "type": "complete",
+    "timestamp": 0,
+    "_delay": 100,
+    "data": {}
+  }
+]

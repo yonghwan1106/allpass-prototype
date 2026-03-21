@@ -8,6 +8,8 @@ import type {
   PIIMaskingEvent,
   APICallEvent,
   MetricsUpdateEvent,
+  HumanApprovalRequestEvent,
+  CrisisDetectionEvent,
   WorkflowState,
 } from '@/lib/agents/types';
 
@@ -96,6 +98,14 @@ export class AgentEventEmitter {
 
   emitMetrics(metrics: MetricsUpdateEvent['data']): void {
     this.emit(this.makeEvent('metrics_update', metrics as unknown as Record<string, unknown>));
+  }
+
+  emitHumanApprovalRequest(data: HumanApprovalRequestEvent['data']): void {
+    this.emit(this.makeEvent('human_approval_request', data as unknown as Record<string, unknown>));
+  }
+
+  emitCrisisDetection(data: CrisisDetectionEvent['data']): void {
+    this.emit(this.makeEvent('crisis_detection', data as unknown as Record<string, unknown>));
   }
 
   emitComplete(): void {
