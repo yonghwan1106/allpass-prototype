@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All-Pass 2차 대면심사 — 예상 질문 및 답변</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    background: #050a18; color: #cbd5e1; line-height: 1.8; font-size: 15px;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 60px 32px; }
+  h1 { font-size: 2.2rem; color: #f1f5f9; margin-bottom: 8px; letter-spacing: -0.02em; }
+  h2 { font-size: 1.4rem; color: #f1f5f9; margin: 48px 0 20px; padding-bottom: 12px;
+       border-bottom: 1px solid rgba(99,102,241,0.2); }
+  .subtitle { color: #64748b; font-size: 0.95rem; margin-bottom: 40px; }
+  .category-badge {
+    display: inline-block; padding: 4px 12px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 700; margin-bottom: 24px;
+  }
+  .cat-innovation { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+  .cat-design { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+  .cat-ai { background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
+  .cat-arch { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+  .cat-trust { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+  .cat-plan { background: rgba(99,102,241,0.12); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.25); }
+  .cat-general { background: rgba(148,163,184,0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.25); }
+
+  .qa-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(99,102,241,0.1);
+    border-radius: 12px; margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .qa-q {
+    padding: 20px 24px; background: rgba(99,102,241,0.05);
+    border-bottom: 1px solid rgba(99,102,241,0.08);
+    font-weight: 700; color: #e2e8f0; font-size: 1.05rem;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .qa-q::before {
+    content: 'Q'; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    color: #fff; font-size: 0.8rem; font-weight: 800;
+  }
+  .qa-a { padding: 20px 24px; }
+  .qa-a p { margin-bottom: 12px; }
+  .qa-a p:last-child { margin-bottom: 0; }
+  .qa-a strong { color: #a5b4fc; }
+  .qa-a em { color: #fbbf24; font-style: normal; font-weight: 600; }
+  .qa-a ul { margin: 8px 0 12px 20px; }
+  .qa-a li { margin-bottom: 6px; }
+  .qa-a .key-point {
+    background: rgba(99,102,241,0.08); border-left: 3px solid #6366f1;
+    padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0;
+    font-size: 0.9rem; color: #a5b4fc;
+  }
+
+  .priority-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.65rem; font-weight: 700; margin-left: 8px; vertical-align: middle;
+  }
+  .priority-high { background: rgba(239,68,68,0.2); color: #f87171; }
+  .priority-mid { background: rgba(245,158,11,0.2); color: #fbbf24; }
+  .priority-low { background: rgba(16,185,129,0.2); color: #34d399; }
+
+  .toc { list-style: none; margin: 20px 0 40px; }
+  .toc li { padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.06); }
+  .toc a { color: #94a3b8; text-decoration: none; transition: color 0.2s; }
+  .toc a:hover { color: #a5b4fc; }
+  .toc .count { color: #6366f1; font-weight: 700; margin-right: 8px; }
+
+  @media print {
+    body { background: #fff; color: #1e293b; }
+    h1, h2 { color: #0f172a; }
+    .qa-q { background: #f1f5f9; color: #0f172a; border-bottom-color: #e2e8f0; }
+    .qa-q::before { background: #4f46e5; }
+    .qa-item { border-color: #e2e8f0; }
+    .qa-a strong { color: #4f46e5; }
+    .key-point { background: #f0f4ff; border-left-color: #4f46e5; color: #4f46e5; }
+    .container { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>All-Pass 2차 대면심사 — 예상 질문 및 답변</h1>
+<p class="subtitle">Track 2 평가 기준 6개 항목 + 일반 질문 기준 | 총 25문항</p>
+
+<h2>목차</h2>
+<ul class="toc">
+  <li><a href="#s1"><span class="count">7문항</span> 서비스 혁신성 (20점) + 일반</a></li>
+  <li><a href="#s2"><span class="count">4문항</span> 서비스 설계 완성도 (20점)</a></li>
+  <li><a href="#s3"><span class="count">4문항</span> AI 기술 적용 적합성 (20점)</a></li>
+  <li><a href="#s4"><span class="count">4문항</span> 기술 아키텍처 타당성 (15점)</a></li>
+  <li><a href="#s5"><span class="count">3문항</span> 신뢰도 높은 AI (15점)</a></li>
+  <li><a href="#s6"><span class="count">3문항</span> 개발계획 및 리스크 관리 (10점)</a></li>
+</ul>
+
+<!-- ============================================ -->
+<h2 id="s1">1. 서비스 혁신성 + 일반 질문</h2>
+<span class="category-badge cat-innovation">서비스 혁신성 20점</span>
+<!-- ============================================ -->
+
+<div class="qa-item">
+  <div class="qa-q">기존 정부24나 국민신문고 챗봇과 All-Pass의 근본적인 차이가 뭔가요?<span class="priority-tag priority-high">출제 확률 높음</span></div>
+  <div class="qa-a">
+    <p>현행 정부24 챗봇은 <strong>결정론적(Deterministic) FAQ 매칭</strong> 방식입니다. "영업신고"라고 입력하면 해당 페이지 링크를 안내할 뿐, 실제 처리는 국민이 직접 해야 합니다.</p>
+    <p>All-Pass는 세 가지 측면에서 근본적으로 다릅니다:</p>
+    <ul>
+      <li><strong>의도 이해</strong>: "파스타 가게 내려고 해요"라는 자연어에서 '일반음식점 영업신고'라는 행정 민원을 추론합니다. 국민이 행정 용어를 몰라도 됩니다 (<em>Zero-Learning</em>).</li>
+      <li><strong>자율 실행</strong>: 추론에 그치지 않고, 7개 전문 에이전트가 DAG 기반으로 건축물대장 조회, 서류 자동완성, 영업신고 접수까지 <em>실제로 처리</em>합니다.</li>
+      <li><strong>선제적 안내</strong>: 복지 시나리오에서 보여드렸듯, 고용보험 상실 신호를 감지하면 국민이 요청하기 전에 실업급여+긴급복지를 안내합니다 (<em>Proactive</em>).</li>
+    </ul>
+    <div class="key-point">핵심: "안내하는 AI"에서 "직접 처리하는 AI"로의 패러다임 전환입니다.</div>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">정부24의 원스톱 서비스(전입신고 등)도 이미 연계 처리를 하고 있는데, 어떤 차별점이 있나요?<span class="priority-tag priority-high">출제 확률 높음</span></div>
+  <div class="qa-a">
+    <p>맞습니다. 정부24의 원스톱 서비스는 <strong>사전에 정의된 고정 연계</strong>입니다. 전입신고 시 건보/연금 변경이 연계되지만, 이것은 개발자가 미리 설계한 고정 시나리오입니다.</p>
+    <p>All-Pass의 차이점:</p>
+    <ul>
+      <li><strong>동적 파생민원 발견</strong>: Planner Agent가 사용자 상황(가족 구성, 보유 자산)을 분석해 <em>개인별로 다른 파생민원을 자동 발견</em>합니다. 예: 3살 아이가 있으면 어린이집 전환까지 연계, 차량 보유 시 차량등록지 변경까지.</li>
+      <li><strong>조건부 분기</strong>: 고정 플로우가 아니라, "소방점검 통과 시에만 영업신고 접수"처럼 조건에 따라 DAG가 동적으로 변합니다.</li>
+      <li><strong>커버리지</strong>: 현재 정부24 원스톱은 12종에 불과합니다. All-Pass는 자연어 입력에서 시작하므로 <em>민원 유형에 제한이 없습니다</em>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">"복합민원"이라는 개념이 왜 중요한가요? 단일 민원 처리만으로는 부족한가요?</div>
+  <div class="qa-a">
+    <p>국민의 실제 니즈는 단일 민원이 아니라 <strong>생활 문제 해결</strong>입니다. "식당 창업"이라는 하나의 목표를 위해 영업신고(위생과), 건축물대장(건축과), 사업자등록(세무서), 소방점검(소방서) 등 <em>4~6개 기관, 8~12종 서류</em>를 처리해야 합니다.</p>
+    <p>제안서 2장의 사용자 여정 분석에서 보여드렸듯, 현행 소요시간은 <em>7~14일, 감정 단계: 혼란→번거로움→짜증→허탈→막막</em>입니다. All-Pass는 이 복합민원을 DAG로 분해하여 병렬 처리함으로써 2~3일로 단축합니다.</p>
+    <div class="key-point">공모전 요강에서도 "단일 민원 유형이 아닌 생활문제 단위의 시나리오 제안 권고"라고 명시하고 있습니다.</div>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">디지털 소외 계층(고령자 등)은 어떻게 접근하나요?</div>
+  <div class="qa-a">
+    <p>All-Pass의 Interaction Layer(1층)는 <strong>멀티모달 입력</strong>을 지원합니다:</p>
+    <ul>
+      <li><strong>음성 입력</strong>: STT(Whisper v3) 기반으로 "실업급여 받으려면 어떻게 해요?"라고 말하면 됩니다. 프로토타입에서 마이크 버튼으로 시연 가능합니다.</li>
+      <li><strong>이미지 입력</strong>: 임대차계약서 사진을 찍어 올리면 OCR+Vision AI로 정보를 자동 추출합니다.</li>
+      <li><strong>전화 연동</strong>: 향후 콜센터(110) 연동 시, 전화 상담 중 AI가 백그라운드에서 분석·처리하고 상담원이 확인만 하는 구조도 가능합니다.</li>
+    </ul>
+    <p>복지 시나리오의 박안심 씨(62세) 페르소나가 바로 이 계층을 대표합니다. <em>"컴퓨터도 잘 모르는데"</em>라는 니즈에 음성+선제적 안내로 대응합니다.</p>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">행정 확장 가능성은? 다른 민원 유형에도 적용 가능한가요?</div>
+  <div class="qa-a">
+    <p>All-Pass의 핵심 설계 원칙은 <strong>시나리오에 종속되지 않는 범용 아키텍처</strong>입니다:</p>
+    <ul>
+      <li><strong>Planner Agent</strong>: 민원 유형별 DAG를 동적으로 생성하므로, 새 시나리오 추가 시 에이전트 코드 변경 없이 <em>법령 DB + API 연결</em>만 추가하면 됩니다.</li>
+      <li><strong>Legal Agent의 RAG</strong>: 국가법령정보센터 28,000건 법령을 벡터 DB에 보유. 새 민원 유형도 법적 근거를 자동 검색합니다.</li>
+      <li><strong>MCP HUB</strong>: 새 정부 API가 추가되면 MCP 도구로 등록하기만 하면 에이전트가 자동으로 활용합니다.</li>
+    </ul>
+    <p>확장 예시: <em>건축 인허가, 상속/증여, 사업자 폐업, 출생신고+아동복지 연계</em> 등 생활문제 단위로 무한 확장 가능합니다.</p>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">프로토타입이 시뮬레이션인데, 실제 정부 API 연동 없이 어떻게 검증할 수 있나요?<span class="priority-tag priority-high">출제 확률 높음</span></div>
+  <div class="qa-a">
+    <p>맞습니다. 현재 프로토타입은 <strong>시뮬레이션 모드</strong>로 동작합니다. 이는 의도된 설계입니다:</p>
+    <ul>
+      <li><strong>아키텍처 검증</strong>: 7개 에이전트 간 SSE 스트리밍, DAG 병렬 실행, 상태 머신 전이 등 <em>핵심 아키텍처가 실제로 동작</em>함을 증명합니다.</li>
+      <li><strong>교체 가능 설계</strong>: API Agent의 내부만 시뮬레이션 → 실제 DPG Hub API로 교체하면 됩니다. 인터페이스(MCP 도구 호출)는 동일합니다.</li>
+      <li><strong>Dual-mode</strong>: `ANTHROPIC_API_KEY` 설정 시 실제 LLM 호출로 전환됩니다. 시뮬레이션과 실제 모드 모두 구현되어 있습니다.</li>
+    </ul>
+    <div class="key-point">프로토타입의 목적은 "정부 API를 호출할 수 있다"가 아니라 "복합민원을 AI가 분해·계획·실행·검증하는 End-to-End 흐름이 작동한다"를 증명하는 것입니다.</div>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">왜 All-Pass라는 이름인가요? 기존 정부 서비스명과 충돌하지 않나요?</div>
+  <div class="qa-a">
+    <p><strong>"모든(All) 민원 절차를 단 한 번에 통과(Pass)한다"</strong>는 의미입니다. 국민이 복잡한 행정 절차를 모르더라도 AI가 모든 관문(Pass)을 대신 통과시켜 준다는 비전을 담았습니다.</p>
+    <p>기존 정부 서비스명(정부24, 원스톱 등)과 충돌하지 않으며, 향후 실제 서비스명은 행정안전부와 협의하여 결정할 사안입니다.</p>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2 id="s2">2. 서비스 설계 완성도</h2>
+<span class="category-badge cat-design">서비스 설계 완성도 20점</span>
+<!-- ============================================ -->
+
+<div class="qa-item">
+  <div class="qa-q">DAG 기반 복합민원 분해를 선택한 이유는? 다른 방식(룰 기반, 선형 체인)과 비교하면?<span class="priority-tag priority-high">출제 확률 높음</span></div>
+  <div class="qa-a">
+    <p>세 가지 방식을 비교했습니다:</p>
+    <ul>
+      <li><strong>룰 기반 트리</strong>: 사전 정의된 조건 분기. 새 시나리오마다 룰을 수동 추가해야 하며, 조건 조합이 폭발적으로 증가합니다.</li>
+      <li><strong>선형 체인</strong>: A→B→C 순차 실행. 병렬 처리가 불가하여 <em>소요 시간이 불필요하게 길어집니다</em>.</li>
+      <li><strong>DAG (Directed Acyclic Graph)</strong>: 의존관계만 정의하면 <em>병렬 가능한 노드를 자동으로 동시 실행</em>합니다.</li>
+    </ul>
+    <p>식당 창업 예시: 건축물대장 조회와 위생교육 이수는 독립적이므로 병렬 실행 → 순차 처리 대비 <em>40% 이상 시간 단축</em>.</p>
+    <div class="key-point">DAG는 국가인공지능전략위원회 「AI에이전트 설계지침」이 권고하는 "하이브리드 오케스트레이션 구조"에도 부합합니다.</div>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">3개 시나리오는 어떤 기준으로 선정했나요?</div>
+  <div class="qa-a">
+    <p><strong>국민 생활밀착도 + 복합성 + 부처 간 연계 필요성</strong>을 기준으로 선정했습니다:</p>
+    <ul>
+      <li><strong>식당 창업</strong>: 소상공인 연 80만 건+. 4~6개 기관 연계 필요. 복합민원의 대표 사례.</li>
+      <li><strong>전입신고</strong>: 연 이사 600만 건+. "1건 → N건 파생"의 연쇄 민원. 정부24 원스톱의 한계를 보여줌.</li>
+      <li><strong>긴급복지</strong>: 복지 사각지대 해소라는 사회적 가치. 선제적 AI의 핵심 차별점. Human-in-the-Loop 시연.</li>
+    </ul>
+    <p>이 세 시나리오가 All-Pass의 세 가지 핵심 역량(<em>복합민원 분해, 파생민원 자동연계, 선제적 위기 감지</em>)을 각각 보여줍니다.</p>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">에이전트 간 실패 시 어떻게 복구하나요? 중간에 하나가 실패하면?<span class="priority-tag priority-mid">출제 확률 중간</span></div>
+  <div class="qa-a">
+    <p>3단계 에러 복구 메커니즘을 설계했습니다:</p>
+    <ul>
+      <li><strong>자동 재시도 (RETRY)</strong>: 개별 노드 실패 시 최대 3회 자동 재시도. 지수 백오프(1초→2초→4초) 적용.</li>
+      <li><strong>대체 경로</strong>: Validator Agent가 검증 실패 시 Legal Agent를 재실행하여 법령 인용을 보강합니다. 프로토타입에서 "에러 복구" 토글로 시연 가능합니다.</li>
+      <li><strong>Human-in-the-Loop (HUMAN_REVIEW)</strong>: 3회 재시도 후에도 실패하면 담당 공무원에게 에스컬레이션합니다. 상태 머신이 HUMAN_REVIEW로 전이됩니다.</li>
+    </ul>
+    <div class="key-point">프로토타입에서 "⚡ 에러 복구" 토글을 켜고 시연하면 실제 RETRY → 재검증 흐름을 볼 수 있습니다.</div>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">행정정보공동이용은 현재 공무원만 조회 가능한데, AI가 직접 조회할 수 있나요?</div>
+  <div class="qa-a">
+    <p>현행 전자정부법 제36조에 따르면 행정정보공동이용은 <strong>행정기관 간</strong> 데이터 공유입니다. 맞습니다, 현재 AI가 직접 조회하는 것은 법적 근거가 필요합니다.</p>
+    <p>All-Pass의 접근:</p>
+    <ul>
+      <li><strong>단기</strong>: 국민 동의 기반 <em>마이데이터(본인정보 이용)</em>로 우회. 금융 마이데이터처럼 행정 마이데이터를 국민이 직접 제공하는 구조.</li>
+      <li><strong>중기</strong>: DPG Hub Gateway를 통한 <em>위임 조회</em>. AI Agent가 국민의 위임을 받아 API 호출. 인증/인가는 DPG Hub가 처리.</li>
+      <li><strong>장기</strong>: 전자정부법 개정 시 "AI 에이전트의 행정정보 조회 권한" 법적 근거 마련.</li>
+    </ul>
+    <div class="key-point">제안서 5.1장에서 마이데이터 융합 전략을 상세히 기술했습니다. 현실적 제약을 인식하고 단계적 접근을 설계했습니다.</div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2 id="s3">3. AI 기술 적용 적합성</h2>
+<span class="category-badge cat-ai">AI 기술 적용 적합성 20점</span>
+<!-- ============================================ -->
+
+<div class="qa-item">
+  <div class="qa-q">왜 단일 LLM이 아닌 멀티 에이전트 구조를 선택했나요?<span class="priority-tag priority-high">출제 확률 높음</span></div>
+  <div class="qa-a">
+    <p>단일 LLM은 <strong>두 가지 한계</strong>가 있습니다:</p>
+    <ul>
+      <li><strong>컨텍스트 오염</strong>: 법령 검색, 서류 생성, API 호출을 하나의 프롬프트에 넣으면 맥락이 섞여 정확도가 떨어집니다.</li>
+      <li><strong>책임 추적 불가</strong>: "이 법률 인용이 잘못됐다"는 피드백을 받았을 때, 단일 LLM에서는 어디서 틀렸는지 추적이 어렵습니다.</li>
+    </ul>
+    <p>멀티 에이전트의 장점:</p>
+    <ul>
+      <li><strong>전문화</strong>: Legal Agent는 법령만, Document Agent는 서류만 담당. 각 에이전트가 최적화된 시스템 프롬프트와 도구를 가집니다.</li>
+      <li><strong>독립 검증</strong>: Validator Agent가 다른 에이전트의 출력을 교차 검증합니다. <em>자기 검증이 아닌 독립 검증</em>입니다.</li>
+      <li><strong>병렬 처리</strong>: DAG 기반으로 독립적인 에이전트를 동시 실행하여 처리 시간을 단축합니다.</li>
+      <li><strong>모델 최적화</strong>: 의도 분석(Sonnet)과 서류 생성(Haiku)에 서로 다른 모델을 배치하여 비용과 성능을 최적화합니다.</li>
+    </ul>
+    <div class="key-point">국가인공지능전략위원회의 AI에이전트 설계지침도 "스마트 라우터를 중심으로 Rule·RPA·SLM·LLM을 적재적소에 배치"하는 하이브리드 구조를 권고합니다.</div>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">LLM 모델은 뭘 사용하나요? 국산 모델도 고려하나요?<span class="priority-tag priority-mid">출제 확률 중간</span></div>
+  <div class="qa-a">
+    <p>현재 프로토타입은 <strong>Claude Sonnet 4.6 + Haiku 4.5</strong>를 사용합니다. 하지만 이는 프로토타입용 선택이며, 실제 구축 시에는:</p>
+    <ul>
+      <li><strong>On-premise sLLM</strong>: 행정망 내부에서 운영해야 하므로, <em>HyperCLOVA X(네이버)</em> 또는 <em>Llama 3.1 70B(한국어 파인튜닝)</em>을 권장합니다.</li>
+      <li><strong>한국어 법률 특화</strong>: 법령 에이전트는 한국 법률 코퍼스로 파인튜닝한 sLLM이 더 정확합니다.</li>
+      <li><strong>하이브리드 배치</strong>: 민감도가 낮은 일정 조회(Scheduler)는 Haiku급 경량 모델, 법률 해석은 고성능 모델로 차등 배치합니다.</li>
+    </ul>
+    <p>제안서 6장 로드맵 Phase 3(7~9개월)에서 <em>On-premise sLLM 전환</em>을 계획하고 있습니다.</p>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">RAG의 법령 검색 정확도는 어느 정도인가요? 할루시네이션은?</div>
+  <div class="qa-a">
+    <p>3단계 검증 파이프라인으로 할루시네이션을 통제합니다:</p>
+    <ul>
+      <li><strong>벡터 검색</strong>: E5-large-v2 임베딩 → Milvus Top-K 검색 → Cross-encoder Re-ranking. 관련 법령 문서를 정확하게 찾습니다.</li>
+      <li><strong>근거 강제</strong>: Legal Agent의 시스템 프롬프트에서 "반드시 검색된 법령 문서(Context)에 기반하여 답변"을 강제합니다. 근거 없는 답변은 생성되지 않습니다.</li>
+      <li><strong>Validator 교차 검증</strong>: Validator Agent가 Legal Agent의 출력에서 인용된 법조문 번호의 존재 여부, 정확성, 최신성을 검증합니다.</li>
+    </ul>
+    <p>프로토타입에서 법령 인용 카드를 클릭하면 <em>실제 법조문 텍스트와 관련성 설명</em>이 표시됩니다.</p>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">MCP(Model Context Protocol)와 A2A(Agent-to-Agent)를 왜 함께 사용하나요?</div>
+  <div class="qa-a">
+    <p>역할이 다릅니다:</p>
+    <ul>
+      <li><strong>MCP</strong>: 에이전트가 <em>외부 도구(API, DB, 문서)</em>에 접근하는 표준 인터페이스. "API Agent가 건축물대장 API를 호출한다"가 MCP입니다.</li>
+      <li><strong>A2A</strong>: <em>에이전트 간 통신</em> 프로토콜. "Master Agent가 Legal Agent에게 법령 검토를 요청한다"가 A2A입니다.</li>
+    </ul>
+    <p>향후 부처별로 독자적인 AI 에이전트를 운영할 때, A2A 프로토콜로 <em>이기종 에이전트 간 상호운용</em>이 가능해집니다. 예: 국세청 에이전트 ↔ All-Pass 에이전트.</p>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2 id="s4">4. 기술 아키텍처 타당성</h2>
+<span class="category-badge cat-arch">기술 아키텍처 타당성 15점</span>
+<!-- ============================================ -->
+
+<div class="qa-item">
+  <div class="qa-q">DPG Hub과의 연계는 구체적으로 어떻게 되나요?<span class="priority-tag priority-high">출제 확률 높음</span></div>
+  <div class="qa-a">
+    <p>제안서 4.5장에서 상세히 기술했습니다. 핵심 구조:</p>
+    <p><strong>All-Pass AI Agent → MCP HUB → DPG Hub Gateway → 실제 행정 시스템</strong></p>
+    <ul>
+      <li><strong>MCP HUB</strong>: All-Pass 내부의 도구 레지스트리. 정부 API를 MCP 도구로 등록하여 에이전트에 표준 인터페이스로 노출.</li>
+      <li><strong>DPG Hub Gateway</strong>: 행안부가 구축 중인 디지털플랫폼정부 API 게이트웨이. 인증/인가, API 라우팅, 로깅/감사, 데이터 변환을 담당.</li>
+      <li><strong>행정 시스템</strong>: 새올행정시스템, 홈택스 API, 세움터 API, 복지로 API, 마이데이터 등.</li>
+    </ul>
+    <div class="key-point">프로토타입의 MCP HUB 오버레이(🔗 MCP HUB 버튼)에서 이 연계 구조를 시각적으로 보여드릴 수 있습니다.</div>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">보안은 어떻게 보장하나요? 행정망에서 운영 가능한가요?<span class="priority-tag priority-high">출제 확률 높음</span></div>
+  <div class="qa-a">
+    <p>제안서 5장에서 4중 보안 아키텍처를 설계했습니다:</p>
+    <ul>
+      <li><strong>PII 마스킹</strong>: 입력 단계에서 주민번호, 전화번호, 주소를 실시간 비식별화. LLM에 원본 개인정보가 전달되지 않습니다. 프로토타입에서 실제로 시연됩니다.</li>
+      <li><strong>프롬프트 인젝션 방어</strong>: 입력 검증 레이어에서 악의적 프롬프트를 필터링합니다.</li>
+      <li><strong>On-premise sLLM</strong>: Phase 3에서 행정망 내부에 sLLM을 배치. 데이터가 외부로 유출되지 않습니다.</li>
+      <li><strong>AI Audit Trail</strong>: 모든 에이전트 행위를 기록하여 사후 감사가 가능합니다. 프로토타입의 "AI Audit" 탭에서 확인 가능합니다.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">정부 시스템 확장 시 성능(처리량, 응답 시간)은 어떻게 보장하나요?</div>
+  <div class="qa-a">
+    <p>아키텍처 설계에서 확장성을 고려했습니다:</p>
+    <ul>
+      <li><strong>이벤트 기반 아키텍처</strong>: Apache Kafka 메시지 브로커로 에이전트 간 비동기 통신. 부하 증가 시 에이전트 인스턴스를 수평 확장합니다.</li>
+      <li><strong>DAG 병렬 처리</strong>: 독립 노드를 동시 실행하므로, 노드 수가 늘어도 처리 시간은 <em>가장 긴 경로(Critical Path)</em>에만 비례합니다.</li>
+      <li><strong>Redis 캐시</strong>: 자주 조회되는 법령, API 응답을 캐시하여 중복 호출을 방지합니다.</li>
+      <li><strong>모델 차등 배치</strong>: 경량 작업(Haiku)과 중요 작업(Sonnet/sLLM)을 분리하여 GPU 자원을 최적화합니다.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">기술 스택에서 LangGraph를 선택한 이유는?</div>
+  <div class="qa-a">
+    <p>에이전트 오케스트레이션 프레임워크를 비교 검토했습니다:</p>
+    <ul>
+      <li><strong>LangChain (단순 체인)</strong>: 선형 파이프라인에 적합하나, DAG 기반 조건부 분기·루프 처리에 한계.</li>
+      <li><strong>AutoGen</strong>: 다중 에이전트 대화에 강하나, 구조화된 워크플로우 상태 관리가 약함.</li>
+      <li><strong>LangGraph</strong>: <em>상태 그래프(State Graph) 기반</em>으로 DAG 실행, 조건부 분기, 루프 처리, 상태 지속성을 모두 지원. 민원 처리의 복잡한 워크플로우에 가장 적합.</li>
+    </ul>
+    <p>프로토타입에서는 경량화를 위해 자체 DAG Executor를 구현했으나, 프로덕션에서는 LangGraph의 <em>체크포인트, 상태 지속성, Human-in-the-Loop 내장 기능</em>을 활용합니다.</p>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2 id="s5">5. 신뢰도 높은 AI</h2>
+<span class="category-badge cat-trust">신뢰도 높은 AI 15점</span>
+<!-- ============================================ -->
+
+<div class="qa-item">
+  <div class="qa-q">Human-in-the-Loop은 모든 결정에 적용되나요? 그러면 자동화 의미가 없지 않나요?<span class="priority-tag priority-high">출제 확률 높음</span></div>
+  <div class="qa-a">
+    <p>아닙니다. <strong>위험도 기반 차등 적용</strong>입니다:</p>
+    <ul>
+      <li><strong>Low Risk</strong> (건축물대장 조회, 서류 목록 생성): <em>자동 처리</em>. 공무원 개입 불필요.</li>
+      <li><strong>Medium Risk</strong> (영업신고 접수, 전입신고): <em>사후 검토</em>. AI가 처리하고 공무원이 결과를 확인.</li>
+      <li><strong>High Risk</strong> (긴급복지 지급 결정, 자격 판정): <em>사전 승인</em>. AI가 분석·근거를 제시하고, 공무원이 최종 승인 후 처리.</li>
+    </ul>
+    <p>복지 시나리오에서 시연한 것이 바로 High Risk 케이스입니다. 전체 작업의 <em>약 80%는 자동 처리</em>되고, <em>20%의 고위험 결정만</em> 공무원 승인을 거칩니다.</p>
+    <div class="key-point">"AI가 판단, 사람이 확인" — 자동화의 효율성과 공공 서비스의 신뢰성을 모두 확보하는 균형점입니다.</div>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">AI의 설명 가능성(Explainability)은 어떻게 확보하나요?</div>
+  <div class="qa-a">
+    <p>3가지 수준의 설명 가능성을 구현합니다:</p>
+    <ul>
+      <li><strong>국민 대상</strong>: 최종 응답에 법령 근거(조문 번호 + 내용)를 명시적으로 인용합니다. "근거: 식품위생법 제37조 1항"처럼.</li>
+      <li><strong>공무원 대상</strong>: AI Audit Trail에서 <em>에이전트별 추론 과정, 검색된 법령 문서, API 호출 내역</em>을 전부 확인할 수 있습니다. 프로토타입의 "AI Audit" 탭이 이것입니다.</li>
+      <li><strong>감사 대상</strong>: 모든 이벤트(SSE 스트림)가 타임스탬프와 함께 기록됩니다. 사후 감사 시 "이 결정이 어떤 근거로, 어떤 순서로 이루어졌는지" 완전한 추적이 가능합니다.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">개인정보 보호는 구체적으로 어떻게?<span class="priority-tag priority-mid">출제 확률 중간</span></div>
+  <div class="qa-a">
+    <p>개인정보보호법과 전자정부법을 준수하는 4중 방어:</p>
+    <ul>
+      <li><strong>입력 단계 PII 마스킹</strong>: 주민번호(000000-0000000 → ******-*******), 전화번호, 상세주소를 LLM 전달 전에 비식별화. 프로토타입에서 실시간 시연됩니다.</li>
+      <li><strong>최소 수집 원칙</strong>: 마이데이터 조회 시 필요한 항목만 선별 조회. 불필요한 개인정보는 수집하지 않습니다.</li>
+      <li><strong>On-premise sLLM</strong>: 행정망 내부에서 LLM을 운영하여 데이터가 외부 클라우드로 전송되지 않습니다.</li>
+      <li><strong>세션 격리</strong>: 민원 건별로 세션을 격리하여, 다른 국민의 데이터가 컨텍스트에 혼입되지 않습니다.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2 id="s6">6. 개발계획 및 리스크 관리</h2>
+<span class="category-badge cat-plan">개발계획 및 리스크 관리 10점</span>
+<!-- ============================================ -->
+
+<div class="qa-item">
+  <div class="qa-q">실제 개발 시 가장 큰 기술적 리스크는 뭔가요?<span class="priority-tag priority-mid">출제 확률 중간</span></div>
+  <div class="qa-a">
+    <p>제안서 6.2장에서 리스크 매트릭스를 작성했습니다. 상위 3개:</p>
+    <ul>
+      <li><strong>LLM 할루시네이션</strong> (영향: 높음, 확률: 중간): 법률 해석 오류 시 국민 피해 가능. <em>대응: RAG + Validator 교차 검증 + Human-in-the-Loop</em>으로 3중 방어.</li>
+      <li><strong>레거시 시스템 연동</strong> (영향: 높음, 확률: 높음): 새올행정시스템 등이 표준 API를 제공하지 않는 경우. <em>대응: RPA Wrapper로 레거시 시스템을 API화. MCP HUB에서 추상화</em>.</li>
+      <li><strong>법·제도적 제약</strong> (영향: 중간, 확률: 중간): AI의 행정정보 조회 권한 부재. <em>대응: 마이데이터 기반 우회 + 법적 근거 마련을 로드맵에 포함</em>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">4단계 로드맵의 현실성은? 12개월 안에 가능한가요?</div>
+  <div class="qa-a">
+    <p>핵심은 <strong>점진적 확장</strong>입니다. 한 번에 모든 것을 구축하지 않습니다:</p>
+    <ul>
+      <li><strong>Phase 1 (1~3개월)</strong>: 식당 창업 <em>단일 시나리오</em> End-to-End. 현재 프로토타입의 아키텍처를 실제 API로 연결하는 수준. 가장 현실적.</li>
+      <li><strong>Phase 2 (4~6개월)</strong>: 전입신고, 복지 추가. Phase 1에서 검증된 에이전트 프레임워크를 재활용하므로 <em>추가 비용이 점진적</em>.</li>
+      <li><strong>Phase 3 (7~9개월)</strong>: On-premise sLLM 전환. 보안 강화. 이 시점에서 행정망 내부 배치.</li>
+      <li><strong>Phase 4 (10~12개월)</strong>: AI 통합민원플랫폼 연계. 범정부 확산 준비.</li>
+    </ul>
+    <p>현재 프로토타입이 <em>핵심 아키텍처(7 에이전트, DAG, SSE, 상태 머신)를 이미 구현</em>하고 있으므로, Phase 1은 API 교체 + 보안 강화가 주요 작업입니다.</p>
+    <div class="key-point">대상·최우수상 팀은 총 8억원 개발비 지원으로 프로토타입 개발에 참여합니다. 이 예산 규모에서 12개월 로드맵은 현실적입니다.</div>
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">예상 비용은? 운영 비용(LLM API 등)은 지속 가능한가요?</div>
+  <div class="qa-a">
+    <p>제안서 6.3장에서 비용 추정을 했습니다:</p>
+    <ul>
+      <li><strong>개발 비용</strong>: Phase 1~4 총 예상 약 5~7억원 (인건비 + 인프라 + 라이선스).</li>
+      <li><strong>LLM 운영 비용</strong>: On-premise sLLM 전환 후 <em>API 호출 비용 제거</em>. GPU 서버 운영비로 대체 (월 500~1000만원 수준).</li>
+      <li><strong>비용 최적화</strong>: 모델 차등 배치(Haiku급 70% + Sonnet급 30%), RAG 캐싱, 결과 캐싱으로 <em>건당 처리 비용을 기존 인건비 대비 1/10 수준</em>으로 절감.</li>
+    </ul>
+    <p>정부24 연간 8억 건 이용 중 복합민원 비율을 5%로 가정하면, 연 4,000만 건. 건당 비용 50원 이하를 목표합니다.</p>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
