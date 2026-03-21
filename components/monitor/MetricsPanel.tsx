@@ -108,18 +108,29 @@ function MetricCard({ icon, label, value, unit, color, special }: MetricCardProp
 
 export function MetricsPanel() {
   const metrics = useAgentStore((s) => s.metrics);
+  const eventLog = useAgentStore((s) => s.eventLog);
+  const citations = useAgentStore((s) => s.citations);
+  const apiCalls = useAgentStore((s) => s.apiCalls);
+  const dag = useAgentStore((s) => s.dag);
 
-  const m = metrics ?? {
-    totalTime: 0,
-    agentCalls: 0,
-    apiCalls: 0,
-    legalCitations: 0,
-    documentsGenerated: 0,
-    timeReduction: 0,
+  // Compute real-time metrics from store data (fallback when metrics_update hasn't arrived)
+  const agentResultCount = eventLog.filter((e) => e.type === 'agent_result').length;
+  const firstEvent = eventLog.length > 0 ? eventLog[0].timestamp : 0;
+  const lastEvent = eventLog.length > 1 ? eventLog[eventLog.length - 1].timestamp : 0;
+  const elapsedSec = firstEvent > 0 && lastEvent > firstEvent ? Math.round((lastEvent - firstEvent) / 1000) : 0;
+  const completedDocNodes = dag?.nodes.filter((n) => n.agentId === 'document' && n.status === 'completed').length ?? 0;
+
+  const m = {
+    totalTime: metrics?.totalTime ? Math.round(metrics.totalTime / 1000) : elapsedSec,
+    agentCalls: metrics?.agentCalls || agentResultCount,
+    apiCalls: metrics?.apiCalls || apiCalls.length,
+    legalCitations: metrics?.legalCitations || citations.length,
+    documentsGenerated: metrics?.documentsGenerated || completedDocNodes,
+    timeReduction: metrics?.timeReduction ?? (elapsedSec > 0 ? Math.round((1 - elapsedSec / (21 * 24 * 3600)) * 100) : 0),
   };
 
   const cards: MetricCardProps[] = [
-    { icon: <Clock className="w-4 h-4" />, label: '처리 시간', value: Math.round(m.totalTime / 1000), unit: '초', color: '#6366f1' },
+    { icon: <Clock className="w-4 h-4" />, label: '처리 시간', value: m.totalTime, unit: '초', color: '#6366f1' },
     { icon: <TrendingDown className="w-4 h-4" />, label: '시간 단축률', value: m.timeReduction, unit: '%', color: '#3b82f6', special: 'circle' },
     { icon: <Bot className="w-4 h-4" />, label: '에이전트 호출', value: m.agentCalls, unit: '회', color: '#8b5cf6' },
     { icon: <Plug className="w-4 h-4" />, label: 'API 연동', value: m.apiCalls, unit: '회', color: '#10b981' },
